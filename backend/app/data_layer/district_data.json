@@ -1,0 +1,68 @@
+{
+  "districts": [
+    {
+      "district": "Ghaziabad",
+      "state": "Uttar Pradesh",
+      "population": 4681645,
+      "rural_population_percent": 32.5,
+      "population_density_per_sqkm": 3971,
+      "sector_business_density": {
+        "dairy": 120,
+        "textiles": 310,
+        "retail": 1450,
+        "food_processing": 280,
+        "handicrafts": 90
+      },
+      "per_capita_income_annual_inr": 165000,
+      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+    },
+    {
+      "district": "Bareilly",
+      "state": "Uttar Pradesh",
+      "population": 4448359,
+      "rural_population_percent": 65.2,
+      "population_density_per_sqkm": 1084,
+      "sector_business_density": {
+        "dairy": 410,
+        "textiles": 260,
+        "retail": 890,
+        "food_processing": 340,
+        "handicrafts": 520
+      },
+      "per_capita_income_annual_inr": 92000,
+      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+    },
+    {
+      "district": "Sitapur",
+      "state": "Uttar Pradesh",
+      "population": 4483992,
+      "rural_population_percent": 88.2,
+      "population_density_per_sqkm": 781,
+      "sector_business_density": {
+        "dairy": 680,
+        "textiles": 110,
+        "retail": 520,
+        "food_processing": 410,
+        "handicrafts": 140
+      },
+      "per_capita_income_annual_inr": 62000,
+      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+    },
+    {
+      "district": "Varanasi",
+      "state": "Uttar Pradesh",
+      "population": 3676841,
+      "rural_population_percent": 56.6,
+      "population_density_per_sqkm": 2395,
+      "sector_business_density": {
+        "dairy": 310,
+        "textiles": 1150,
+        "retail": 1280,
+        "food_processing": 390,
+        "handicrafts": 1850
+      },
+      "per_capita_income_annual_inr": 118000,
+      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+    }
+  ]
+}
