@@ -9,18 +9,21 @@ import {
   Printer,
   Sparkles,
   CheckCircle2,
-  Share2
+  Share2,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react';
 import FeasibilityReport from '../components/FeasibilityReport/FeasibilityReport';
 import FinancialRoadmap from '../components/FinancialRoadmap/FinancialRoadmap';
+import { useCalculateFinancials } from '../hooks/useApi';
 
 /**
  * Result Page Component
  * Professional dashboard displaying:
  * - Top Parameter summary bar (Location, Margin Capital, Category, Description)
- * - AI Loading state
+ * - Real API Loading state & Error state handling
  * - Module 1: Business Feasibility Report
- * - Module 2: Financial Roadmap
+ * - Module 2: Financial Roadmap (Wired to backend API)
  * - Navigation actions: Back button & Start New Analysis button
  */
 export default function Result({
@@ -29,8 +32,7 @@ export default function Result({
   onStartNew,
   currentLang = 'en',
 }) {
-  const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'feasibility' | 'financial'
+  const { calculate, data: financialData, loading, error } = useCalculateFinancials();
 
   // Default fallback data if page is accessed directly
   const data = submissionData || {
@@ -42,13 +44,22 @@ export default function Result({
     submittedAt: new Date().toISOString(),
   };
 
-  // Simulate AI computation and scheme synthesis
+  const marginCap = data.marginCapital || 150000;
+
+  // Trigger backend financial calculation on mount or marginCapital change
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 1100);
-    return () => clearTimeout(timer);
-  }, []);
+    if (marginCap > 0) {
+      calculate(marginCap).catch((err) => {
+        console.error('Financial calculation API call failed:', err);
+      });
+    }
+  }, [marginCap, calculate]);
+
+  const handleRetry = () => {
+    if (marginCap > 0) {
+      calculate(marginCap);
+    }
+  };
 
   const formatCurrency = (val) => {
     return new Intl.NumberFormat('en-IN', {
@@ -62,7 +73,7 @@ export default function Result({
     window.print();
   };
 
-  // 1. AI Loading State View
+  // 1. Real API Loading State View
   if (loading) {
     return (
       <div className="container" style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -70,13 +81,13 @@ export default function Result({
           <div className="ai-pulse-spinner" />
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>
             {currentLang === 'hi'
-              ? 'एआई विश्लेषण तैयार किया जा रहा है...'
-              : 'Synthesizing Hyper-Local Advisory...'}
+              ? 'एआई विश्लेषण एवं वित्तीय योजना तैयार की जा रही है...'
+              : 'Calculating Project Financials & Structuring...'}
           </h2>
           <p style={{ fontSize: '0.9375rem', color: '#64748B', maxWidth: '480px', margin: '0 auto' }}>
             {currentLang === 'hi'
-              ? `${data.location} के जिला सांख्यिकी डेटा, आपूर्ति श्रृंखला और ऋण योजनाओं का मूल्यांकन किया जा रहा है।`
-              : `Evaluating district census, local competition, and central/state credit schemes for ${data.location}.`}
+              ? `${data.location} के लिए ₹${marginCap.toLocaleString('en-IN')} मार्जिन पूंजी पर आधारित वित्तीय योजना संकलित की जा रही है।`
+              : `Computing loan eligibility, scheme routing, and EMI schedules for ₹${marginCap.toLocaleString('en-IN')} margin capital in ${data.location}.`}
           </p>
 
           <div className="loading-progress-track">
@@ -85,9 +96,58 @@ export default function Result({
 
           <span style={{ fontSize: '0.8125rem', color: '#059669', fontWeight: 600 }}>
             {currentLang === 'hi'
-              ? 'व्यवहार्यता रिपोर्ट और वित्तीय रोडमैप संकलित हो रहा है...'
-              : 'Compiling Feasibility Matrix & Financial Flow...'}
+              ? 'वित्तीय इंजन एवं पुनर्भुगतान अनुसूची गणना जारी है...'
+              : 'Running Financial Engine & Repayment Amortization...'}
           </span>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. Real API Error State View
+  if (error) {
+    return (
+      <div className="container" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div
+          className="dashboard-card"
+          style={{
+            maxWidth: '540px',
+            textAlign: 'center',
+            padding: '2.5rem 2rem',
+            borderLeft: '4px solid #EF4444',
+          }}
+        >
+          <AlertCircle size={48} style={{ color: '#EF4444', margin: '0 auto 1rem' }} />
+          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+            {currentLang === 'hi'
+              ? 'वित्तीय गणना लोड करने में असमर्थ'
+              : "Couldn't calculate your financial plan right now."}
+          </h2>
+          <p style={{ fontSize: '0.9375rem', color: '#64748B', marginBottom: '1.5rem', lineHeight: 1.5 }}>
+            {error.message ||
+              (currentLang === 'hi'
+                ? 'कृपया सर्वर कनेक्शन जांचें और पुनः प्रयास करें।'
+                : 'Please check your connection and try again.')}
+          </p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <button
+              type="button"
+              className="btn-nav-action btn-nav-back"
+              onClick={onBack}
+            >
+              <ArrowLeft size={16} />
+              <span>{currentLang === 'hi' ? 'फॉर्म पर वापस जाएं' : 'Back to Edit Form'}</span>
+            </button>
+            <button
+              type="button"
+              className="btn-primary-cta"
+              style={{ width: 'auto', padding: '0 1.25rem', height: '40px', fontSize: '0.875rem' }}
+              onClick={handleRetry}
+            >
+              <RefreshCw size={16} />
+              <span>{currentLang === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}</span>
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -200,6 +260,7 @@ export default function Result({
       {/* MODULE 2: FINANCIAL ROADMAP */}
       <FinancialRoadmap
         marginCapital={data.marginCapital}
+        financialData={financialData}
         currentLang={currentLang}
       />
 
