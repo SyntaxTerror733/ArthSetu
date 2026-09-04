@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { calculateFinancials, getFeasibilityReport } from '../lib/api';
+import { calculateFinancials, getFeasibilityReport, askChatQuestion } from '../lib/api';
 
 /**
  * Generic React hook for executing async API functions with state management.
@@ -73,3 +73,21 @@ export function useFeasibilityReport() {
     reset,
   };
 }
+
+/**
+ * Custom hook for sending follow-up chatbot questions about a feasibility report.
+ * 
+ * @returns {Object} { askQuestion, execute, data, loading, error, reset }
+ */
+export function useChatQuestion() {
+  const { execute, data, loading, error, reset } = useApi(askChatQuestion);
+  return {
+    askQuestion: execute,
+    execute,
+    data,
+    loading,
+    error,
+    reset,
+  };
+}
+

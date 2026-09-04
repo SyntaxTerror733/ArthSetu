@@ -61,3 +61,28 @@ export async function getFeasibilityReport(district, businessCategory) {
   });
   return handleResponse(response);
 }
+
+/**
+ * Sends a follow-up chat question regarding a feasibility report.
+ * @param {string} district - District name
+ * @param {string} businessCategory - Business category
+ * @param {string} question - User question string
+ * @param {Object} report - Feasibility report dictionary
+ * @returns {Promise<Object>} Object with `{ answer: string }`
+ */
+export async function askChatQuestion(district, businessCategory, question, report) {
+  const response = await fetch(`${BASE_URL}/api/chat`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      district,
+      business_category: businessCategory,
+      question,
+      report: report || {},
+    }),
+  });
+  return handleResponse(response);
+}
+

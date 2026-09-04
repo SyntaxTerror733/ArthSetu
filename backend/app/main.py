@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.calculator import router as calculator_router
 from app.routes.report import router as report_router
+from app.routes import chat
 
 load_dotenv()
 
@@ -25,6 +26,7 @@ app.add_middleware(
 
 app.include_router(calculator_router)
 app.include_router(report_router)
+app.include_router(chat.router)
 
 
 @app.get("/")

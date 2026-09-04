@@ -18,6 +18,7 @@ import {
   Zap,
   Database,
 } from 'lucide-react';
+import ReportChat from './ReportChat';
 
 /**
  * Module 1: Business Feasibility Report
@@ -28,6 +29,7 @@ import {
  * 4. Competitor Mapping (local density & competitive landscape)
  * 5. Product Market Value / Pricing Suggestion (recommended retail pricing & margins)
  * 6. Source Badge (_source: "live_llm" or "fallback_cache")
+ * 7. Interactive Report AI Chatbot (ReportChat)
  */
 export default function FeasibilityReport({
   location = 'Local Area',
@@ -716,6 +718,14 @@ export default function FeasibilityReport({
           )}
         </div>
       </div>
+
+      {/* 7. Interactive Follow-up AI Assistant Chatbot */}
+      <ReportChat
+        district={location}
+        businessCategory={category}
+        report={reportData || insights}
+        currentLang={currentLang}
+      />
     </section>
   );
 }
