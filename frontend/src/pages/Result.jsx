@@ -15,14 +15,13 @@ import {
 } from 'lucide-react';
 import FeasibilityReport from '../components/FeasibilityReport/FeasibilityReport';
 import FinancialRoadmap from '../components/FinancialRoadmap/FinancialRoadmap';
-import { useCalculateFinancials } from '../hooks/useApi';
+import { useCalculateFinancials, useFeasibilityReport } from '../hooks/useApi';
 
 /**
  * Result Page Component
  * Professional dashboard displaying:
  * - Top Parameter summary bar (Location, Margin Capital, Category, Description)
- * - Real API Loading state & Error state handling
- * - Module 1: Business Feasibility Report
+ * - Module 1: Business Feasibility Report (Wired to backend AI endpoint)
  * - Module 2: Financial Roadmap (Wired to backend API)
  * - Navigation actions: Back button & Start New Analysis button
  */
@@ -32,7 +31,19 @@ export default function Result({
   onStartNew,
   currentLang = 'en',
 }) {
-  const { calculate, data: financialData, loading, error } = useCalculateFinancials();
+  const {
+    calculate,
+    data: financialData,
+    loading: financialLoading,
+    error: financialError,
+  } = useCalculateFinancials();
+
+  const {
+    getReport,
+    data: reportData,
+    loading: reportLoading,
+    error: reportError,
+  } = useFeasibilityReport();
 
   // Default fallback data if page is accessed directly
   const data = submissionData || {
@@ -45,6 +56,8 @@ export default function Result({
   };
 
   const marginCap = data.marginCapital || 150000;
+  const districtName = (data.district || data.location || 'Ghaziabad').split(',')[0].trim();
+  const categoryName = data.category || 'Retail';
 
   // Trigger backend financial calculation on mount or marginCapital change
   useEffect(() => {
@@ -55,9 +68,24 @@ export default function Result({
     }
   }, [marginCap, calculate]);
 
-  const handleRetry = () => {
+  // Trigger backend feasibility report API call on mount or parameters change
+  useEffect(() => {
+    if (districtName && categoryName) {
+      getReport(districtName, categoryName).catch((err) => {
+        console.error('Feasibility report API call failed:', err);
+      });
+    }
+  }, [districtName, categoryName, getReport]);
+
+  const handleRetryFinancials = () => {
     if (marginCap > 0) {
       calculate(marginCap);
+    }
+  };
+
+  const handleRetryReport = () => {
+    if (districtName && categoryName) {
+      getReport(districtName, categoryName);
     }
   };
 
@@ -73,87 +101,6 @@ export default function Result({
     window.print();
   };
 
-  // 1. Real API Loading State View
-  if (loading) {
-    return (
-      <div className="container" style={{ minHeight: '70vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div className="ai-loading-panel">
-          <div className="ai-pulse-spinner" />
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', marginBottom: '0.5rem' }}>
-            {currentLang === 'hi'
-              ? 'एआई विश्लेषण एवं वित्तीय योजना तैयार की जा रही है...'
-              : 'Calculating Project Financials & Structuring...'}
-          </h2>
-          <p style={{ fontSize: '0.9375rem', color: '#64748B', maxWidth: '480px', margin: '0 auto' }}>
-            {currentLang === 'hi'
-              ? `${data.location} के लिए ₹${marginCap.toLocaleString('en-IN')} मार्जिन पूंजी पर आधारित वित्तीय योजना संकलित की जा रही है।`
-              : `Computing loan eligibility, scheme routing, and EMI schedules for ₹${marginCap.toLocaleString('en-IN')} margin capital in ${data.location}.`}
-          </p>
-
-          <div className="loading-progress-track">
-            <div className="loading-progress-bar" />
-          </div>
-
-          <span style={{ fontSize: '0.8125rem', color: '#059669', fontWeight: 600 }}>
-            {currentLang === 'hi'
-              ? 'वित्तीय इंजन एवं पुनर्भुगतान अनुसूची गणना जारी है...'
-              : 'Running Financial Engine & Repayment Amortization...'}
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  // 2. Real API Error State View
-  if (error) {
-    return (
-      <div className="container" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div
-          className="dashboard-card"
-          style={{
-            maxWidth: '540px',
-            textAlign: 'center',
-            padding: '2.5rem 2rem',
-            borderLeft: '4px solid #EF4444',
-          }}
-        >
-          <AlertCircle size={48} style={{ color: '#EF4444', margin: '0 auto 1rem' }} />
-          <h2 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
-            {currentLang === 'hi'
-              ? 'वित्तीय गणना लोड करने में असमर्थ'
-              : "Couldn't calculate your financial plan right now."}
-          </h2>
-          <p style={{ fontSize: '0.9375rem', color: '#64748B', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-            {error.message ||
-              (currentLang === 'hi'
-                ? 'कृपया सर्वर कनेक्शन जांचें और पुनः प्रयास करें।'
-                : 'Please check your connection and try again.')}
-          </p>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <button
-              type="button"
-              className="btn-nav-action btn-nav-back"
-              onClick={onBack}
-            >
-              <ArrowLeft size={16} />
-              <span>{currentLang === 'hi' ? 'फॉर्म पर वापस जाएं' : 'Back to Edit Form'}</span>
-            </button>
-            <button
-              type="button"
-              className="btn-primary-cta"
-              style={{ width: 'auto', padding: '0 1.25rem', height: '40px', fontSize: '0.875rem' }}
-              onClick={handleRetry}
-            >
-              <RefreshCw size={16} />
-              <span>{currentLang === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}</span>
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // 2. Full Dashboard View
   return (
     <div className="container dashboard-container">
       {/* Parameter Top Header Bar */}
@@ -255,14 +202,69 @@ export default function Result({
         category={data.category}
         capital={data.marginCapital}
         currentLang={currentLang}
+        reportData={reportData}
+        loading={reportLoading}
+        error={reportError}
+        onRetry={handleRetryReport}
       />
 
       {/* MODULE 2: FINANCIAL ROADMAP */}
-      <FinancialRoadmap
-        marginCapital={data.marginCapital}
-        financialData={financialData}
-        currentLang={currentLang}
-      />
+      {financialLoading ? (
+        <section className="dashboard-module" id="module-financial">
+          <div className="dashboard-card" style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
+            <div className="ai-pulse-spinner" style={{ margin: '0 auto 1rem' }} />
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+              {currentLang === 'hi'
+                ? 'वित्तीय योजना तैयार की जा रही है...'
+                : 'Calculating Project Financials & Amortization...'}
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: '#64748B' }}>
+              {currentLang === 'hi'
+                ? `₹${marginCap.toLocaleString('en-IN')} मार्जिन पूंजी पर ऋण पात्रता एवं किस्त अनुसूची गणना जारी है।`
+                : `Computing loan eligibility, scheme routing, and EMI schedules for ₹${marginCap.toLocaleString('en-IN')} margin capital.`}
+            </p>
+          </div>
+        </section>
+      ) : financialError ? (
+        <section className="dashboard-module" id="module-financial">
+          <div
+            className="dashboard-card"
+            style={{
+              padding: '2rem',
+              textAlign: 'center',
+              borderLeft: '4px solid #EF4444',
+            }}
+          >
+            <AlertCircle size={40} style={{ color: '#EF4444', margin: '0 auto 0.75rem' }} />
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+              {currentLang === 'hi'
+                ? 'वित्तीय योजना लोड करने में असमर्थ'
+                : "Couldn't calculate your financial plan right now."}
+            </h3>
+            <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: '1.25rem' }}>
+              {financialError.message ||
+                (currentLang === 'hi'
+                  ? 'कृपया सर्वर कनेक्शन जांचें और पुनः प्रयास करें।'
+                  : 'Please check your connection and try again.')}
+            </p>
+            <button
+              type="button"
+              className="btn-primary-cta"
+              style={{ width: 'auto', padding: '0 1.25rem', height: '38px', fontSize: '0.875rem', margin: '0 auto' }}
+              onClick={handleRetryFinancials}
+            >
+              <RefreshCw size={16} />
+              <span>{currentLang === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}</span>
+            </button>
+          </div>
+        </section>
+      ) : (
+        <FinancialRoadmap
+          marginCapital={data.marginCapital}
+          financialData={financialData}
+          currentLang={currentLang}
+        />
+      )}
 
       {/* Bottom Sticky Action Footer */}
       <div
@@ -314,3 +316,4 @@ export default function Result({
     </div>
   );
 }
+

@@ -13,26 +13,99 @@ import {
   MapPin,
   Store,
   Truck,
-  Building
+  Building,
+  RefreshCw,
+  Zap,
+  Database,
 } from 'lucide-react';
 
 /**
  * Module 1: Business Feasibility Report
- * Covers:
- * 1. Market Reach (consumer reach, 5-10km radius, distribution channels)
- * 2. Opportunity Analysis (underserved gaps)
- * 3. SWOT Analysis (clean 2x2 grid)
- * 4. Local Threats (seasonal demand, supply chain, competition, buyer dependency)
- * 5. Competitor Mapping (visual density indicator)
- * 6. Product Market Value (suggested pricing & market potential)
+ * Displays real backend AI report data when `reportData` prop is provided:
+ * 1. Market Reach (consumer reach, distribution narrative)
+ * 2. Opportunity Analysis (underserved gaps & demand vectors)
+ * 3. SWOT Analysis (clean 2x2 grid for strengths, weaknesses, opportunities, threats)
+ * 4. Competitor Mapping (local density & competitive landscape)
+ * 5. Product Market Value / Pricing Suggestion (recommended retail pricing & margins)
+ * 6. Source Badge (_source: "live_llm" or "fallback_cache")
  */
 export default function FeasibilityReport({
   location = 'Local Area',
   category = 'Micro Enterprise',
   capital = 100000,
   currentLang = 'en',
+  reportData = null,
+  loading = false,
+  error = null,
+  onRetry = null,
 }) {
-  // Category-tailored mock data generator to give hyper-local feel
+  // 1. Loading State View for Module 1
+  if (loading) {
+    return (
+      <section className="dashboard-module" id="module-feasibility">
+        <div className="dashboard-card" style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
+          <div className="ai-pulse-spinner" style={{ margin: '0 auto 1rem' }} />
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+            {currentLang === 'hi'
+              ? 'एआई व्यवहार्यता रिपोर्ट तैयार की जा रही है...'
+              : 'Generating AI Business Feasibility Report...'}
+          </h3>
+          <p style={{ fontSize: '0.9375rem', color: '#64748B', maxWidth: '480px', margin: '0 auto 1.25rem' }}>
+            {currentLang === 'hi'
+              ? `${location} में ${category} के लिए अति-स्थानीय बाज़ार और प्रतिस्पर्धी डेटा का विश्लेषण किया जा रहा है।`
+              : `Analyzing hyper-local district data, market demand, and SWOT matrix for ${category} in ${location}.`}
+          </p>
+          <div className="loading-progress-track" style={{ maxWidth: '360px', margin: '0 auto' }}>
+            <div className="loading-progress-bar" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // 2. Error State View for Module 1 (Independently rendered without breaking other modules)
+  if (error) {
+    return (
+      <section className="dashboard-module" id="module-feasibility">
+        <div
+          className="dashboard-card"
+          style={{
+            padding: '2rem',
+            textAlign: 'center',
+            borderLeft: '4px solid #EF4444',
+          }}
+        >
+          <AlertCircle size={40} style={{ color: '#EF4444', margin: '0 auto 0.75rem' }} />
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+            {currentLang === 'hi'
+              ? 'व्यवहार्यता रिपोर्ट तैयार करने में असमर्थ'
+              : "Couldn't generate your feasibility report right now."}
+          </h3>
+          <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: '1.25rem', maxWidth: '500px', margin: '0 auto 1.25rem' }}>
+            {typeof error === 'string'
+              ? error
+              : error.message ||
+                (currentLang === 'hi'
+                  ? 'सर्वर से संपर्क करने में समस्या आई। कृपया पुनः प्रयास करें।'
+                  : 'Failed to fetch feasibility report from backend AI server.')}
+          </p>
+          {onRetry && (
+            <button
+              type="button"
+              className="btn-primary-cta"
+              style={{ width: 'auto', padding: '0 1.25rem', height: '38px', fontSize: '0.875rem', margin: '0 auto' }}
+              onClick={onRetry}
+            >
+              <RefreshCw size={16} />
+              <span>{currentLang === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}</span>
+            </button>
+          )}
+        </div>
+      </section>
+    );
+  }
+
+  // Category-tailored mock data generator for fallback when reportData is not provided
   const getCategoryInsights = (cat) => {
     switch (cat) {
       case 'Dairy':
@@ -99,6 +172,7 @@ export default function FeasibilityReport({
         };
 
       case 'Retail Shop':
+      case 'Retail':
         return {
           reachCount: '9,800+ local residents',
           radius: '3–6 km radius',
@@ -228,6 +302,78 @@ export default function FeasibilityReport({
 
   const insights = getCategoryInsights(category);
 
+  // Helper to render SWOT items from real API array/string or fallback
+  const renderSwotBlock = (realContent, defaultList, icon) => {
+    const content = realContent !== undefined && realContent !== null ? realContent : defaultList;
+    if (!content) return null;
+
+    if (Array.isArray(content)) {
+      return (
+        <ul className="swot-items-list">
+          {content.map((item, idx) => (
+            <li key={idx} className="swot-item-bullet">
+              {icon}
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+      );
+    }
+
+    if (typeof content === 'string') {
+      const lines = content
+        .split(/(?<=\.)\s+|\n+/)
+        .map((s) => s.trim())
+        .filter((s) => s.length > 0);
+
+      if (lines.length > 1) {
+        return (
+          <ul className="swot-items-list">
+            {lines.map((line, idx) => (
+              <li key={idx} className="swot-item-bullet" style={{ alignItems: 'flex-start' }}>
+                {icon}
+                <span style={{ lineHeight: 1.45 }}>{line.replace(/^[-•*]\s*/, '')}</span>
+              </li>
+            ))}
+          </ul>
+        );
+      }
+
+      return (
+        <div style={{ fontSize: '0.875rem', lineHeight: '1.5', color: '#1E293B', display: 'flex', gap: '0.5rem', alignItems: 'flex-start' }}>
+          {icon}
+          <span>{content}</span>
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  // Helper to render generic text / array fields
+  const renderNarrative = (realVal, defaultListOrRender) => {
+    if (realVal) {
+      if (Array.isArray(realVal)) {
+        return (
+          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {realVal.map((item, idx) => (
+              <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', fontSize: '0.875rem', color: '#1E293B', lineHeight: 1.5 }}>
+                <span style={{ color: '#059669', flexShrink: 0, marginTop: '2px' }}>✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        );
+      }
+      return (
+        <p style={{ fontSize: '0.875rem', color: '#334155', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+          {realVal}
+        </p>
+      );
+    }
+    return defaultListOrRender;
+  };
+
   return (
     <section className="dashboard-module" id="module-feasibility">
       {/* Module Title */}
@@ -250,9 +396,24 @@ export default function FeasibilityReport({
           </div>
         </div>
 
-        <span className="badge badge-emerald">
-          <CheckCircle2 size={14} />
-          {currentLang === 'hi' ? 'उच्च व्यवहार्यता स्कोर: 86%' : 'Feasibility Score: 86% High'}
+        {/* Source Badge */}
+        <span className="badge badge-emerald" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.375rem' }}>
+          {reportData?._source === 'live_llm' ? (
+            <>
+              <Zap size={14} style={{ color: '#059669' }} />
+              {currentLang === 'hi' ? 'लाइव AI विश्लेषण' : 'Live AI Analysis'}
+            </>
+          ) : reportData?._source === 'fallback_cache' ? (
+            <>
+              <Database size={14} style={{ color: '#0D9488' }} />
+              {currentLang === 'hi' ? 'कैश्ड सलाहकार रिपोर्ट' : 'Cached AI Report'}
+            </>
+          ) : (
+            <>
+              <CheckCircle2 size={14} />
+              {currentLang === 'hi' ? 'उच्च व्यवहार्यता स्कोर: 86%' : 'Feasibility Score: 86% High'}
+            </>
+          )}
         </span>
       </div>
 
@@ -268,21 +429,29 @@ export default function FeasibilityReport({
             <span className="badge badge-teal">{insights.radius}</span>
           </div>
 
-          <div className="market-reach-stats">
-            <div className="stat-box">
-              <div className="stat-label">
-                {currentLang === 'hi' ? 'अनुमानित उपभोक्ता पहुंच' : 'Local Consumer Reach'}
-              </div>
-              <div className="stat-value text-emerald">{insights.reachCount}</div>
+          {reportData?.market_reach ? (
+            <div style={{ marginBottom: '1rem' }}>
+              <p style={{ fontSize: '0.875rem', color: '#334155', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+                {reportData.market_reach}
+              </p>
             </div>
+          ) : (
+            <div className="market-reach-stats">
+              <div className="stat-box">
+                <div className="stat-label">
+                  {currentLang === 'hi' ? 'अनुमानित उपभोक्ता पहुंच' : 'Local Consumer Reach'}
+                </div>
+                <div className="stat-value text-emerald">{insights.reachCount}</div>
+              </div>
 
-            <div className="stat-box">
-              <div className="stat-label">
-                {currentLang === 'hi' ? 'परिचालन दायरा' : 'Target Radius'}
+              <div className="stat-box">
+                <div className="stat-label">
+                  {currentLang === 'hi' ? 'परिचालन दायरा' : 'Target Radius'}
+                </div>
+                <div className="stat-value">{insights.radius}</div>
               </div>
-              <div className="stat-value">{insights.radius}</div>
             </div>
-          </div>
+          )}
 
           <div>
             <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: '#64748B', display: 'block', marginBottom: '0.35rem' }}>
@@ -316,14 +485,17 @@ export default function FeasibilityReport({
               : 'Key market voids and latent demand vectors identified in this territory:'}
           </p>
 
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-            {insights.opportunities.map((opp, idx) => (
-              <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', fontSize: '0.875rem', color: '#1E293B', lineHeight: 1.45 }}>
-                <span style={{ color: '#059669', flexShrink: 0, marginTop: '2px' }}>✓</span>
-                <span>{opp}</span>
-              </li>
-            ))}
-          </ul>
+          {renderNarrative(
+            reportData?.opportunity_analysis,
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {insights.opportunities.map((opp, idx) => (
+                <li key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.625rem', fontSize: '0.875rem', color: '#1E293B', lineHeight: 1.45 }}>
+                  <span style={{ color: '#059669', flexShrink: 0, marginTop: '2px' }}>✓</span>
+                  <span>{opp}</span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 
@@ -348,14 +520,11 @@ export default function FeasibilityReport({
                 <span>{currentLang === 'hi' ? 'ताकत (Strengths)' : 'Strengths'}</span>
               </span>
             </div>
-            <ul className="swot-items-list">
-              {insights.swot.strengths.map((item, idx) => (
-                <li key={idx} className="swot-item-bullet">
-                  <CheckCircle2 size={16} className="text-emerald swot-bullet-icon" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            {renderSwotBlock(
+              reportData?.swot?.strengths,
+              insights.swot.strengths,
+              <CheckCircle2 size={16} className="text-emerald swot-bullet-icon" />
+            )}
           </div>
 
           {/* Weaknesses */}
@@ -366,14 +535,11 @@ export default function FeasibilityReport({
                 <span>{currentLang === 'hi' ? 'कमजोरियां (Weaknesses)' : 'Weaknesses'}</span>
               </span>
             </div>
-            <ul className="swot-items-list">
-              {insights.swot.weaknesses.map((item, idx) => (
-                <li key={idx} className="swot-item-bullet">
-                  <AlertCircle size={16} className="text-saffron swot-bullet-icon" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            {renderSwotBlock(
+              reportData?.swot?.weaknesses,
+              insights.swot.weaknesses,
+              <AlertCircle size={16} className="text-saffron swot-bullet-icon" />
+            )}
           </div>
 
           {/* Opportunities */}
@@ -384,14 +550,11 @@ export default function FeasibilityReport({
                 <span>{currentLang === 'hi' ? 'अवसर (Opportunities)' : 'Opportunities'}</span>
               </span>
             </div>
-            <ul className="swot-items-list">
-              {insights.swot.opportunities.map((item, idx) => (
-                <li key={idx} className="swot-item-bullet">
-                  <TrendingUp size={16} className="text-teal swot-bullet-icon" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            {renderSwotBlock(
+              reportData?.swot?.opportunities,
+              insights.swot.opportunities,
+              <TrendingUp size={16} className="text-teal swot-bullet-icon" />
+            )}
           </div>
 
           {/* Threats */}
@@ -404,14 +567,11 @@ export default function FeasibilityReport({
                 <span>{currentLang === 'hi' ? 'चुनौतियां (Threats)' : 'Threats'}</span>
               </span>
             </div>
-            <ul className="swot-items-list">
-              {insights.swot.threats.map((item, idx) => (
-                <li key={idx} className="swot-item-bullet">
-                  <AlertTriangle size={16} style={{ color: '#E11D48' }} className="swot-bullet-icon" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+            {renderSwotBlock(
+              reportData?.swot?.threats,
+              insights.swot.threats,
+              <AlertTriangle size={16} style={{ color: '#E11D48' }} className="swot-bullet-icon" />
+            )}
           </div>
         </div>
       </div>
@@ -455,82 +615,108 @@ export default function FeasibilityReport({
             </h3>
           </div>
 
-          <div className="competitor-density-bar">
-            <div className="density-label-row">
-              <span>Estimated Competition Density</span>
-              <span style={{ color: insights.competitors.densityColor }}>
-                {insights.competitors.densityLabel}
-              </span>
-            </div>
-            <div className="density-track">
-              <div
-                className="density-fill"
-                style={{
-                  width: `${insights.competitors.densityPercent}%`,
-                  backgroundColor: insights.competitors.densityColor,
-                }}
-              />
-            </div>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '1.25rem' }}>
-            <div style={{ backgroundColor: 'var(--color-bg)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-navy-muted)', display: 'block' }}>
-                LOCAL DENSITY (0–5 KM)
-              </span>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-navy)', fontWeight: 600, marginTop: '2px' }}>
-                {insights.competitors.within5km}
+          {reportData?.competitor_mapping ? (
+            <div style={{ marginTop: '0.75rem' }}>
+              <p style={{ fontSize: '0.875rem', color: '#334155', lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+                {reportData.competitor_mapping}
               </p>
             </div>
+          ) : (
+            <>
+              <div className="competitor-density-bar">
+                <div className="density-label-row">
+                  <span>Estimated Competition Density</span>
+                  <span style={{ color: insights.competitors.densityColor }}>
+                    {insights.competitors.densityLabel}
+                  </span>
+                </div>
+                <div className="density-track">
+                  <div
+                    className="density-fill"
+                    style={{
+                      width: `${insights.competitors.densityPercent}%`,
+                      backgroundColor: insights.competitors.densityColor,
+                    }}
+                  />
+                </div>
+              </div>
 
-            <div style={{ backgroundColor: 'var(--color-bg)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-navy-muted)', display: 'block' }}>
-                PERI-URBAN DENSITY (5–10 KM)
-              </span>
-              <p style={{ fontSize: '0.875rem', color: 'var(--color-navy)', fontWeight: 600, marginTop: '2px' }}>
-                {insights.competitors.within10km}
-              </p>
-            </div>
-          </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem', marginTop: '1.25rem' }}>
+                <div style={{ backgroundColor: 'var(--color-bg)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-navy-muted)', display: 'block' }}>
+                    LOCAL DENSITY (0–5 KM)
+                  </span>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-navy)', fontWeight: 600, marginTop: '2px' }}>
+                    {insights.competitors.within5km}
+                  </p>
+                </div>
+
+                <div style={{ backgroundColor: 'var(--color-bg)', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid var(--color-border)' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-navy-muted)', display: 'block' }}>
+                    PERI-URBAN DENSITY (5–10 KM)
+                  </span>
+                  <p style={{ fontSize: '0.875rem', color: 'var(--color-navy)', fontWeight: 600, marginTop: '2px' }}>
+                    {insights.competitors.within10km}
+                  </p>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
-        {/* 6. Product Market Value */}
+        {/* 6. Product Market Value / Pricing Suggestion */}
         <div className="dashboard-card">
           <div className="card-title-row">
             <h3 className="card-heading">
               <Tag size={20} className="text-emerald" />
-              <span>{currentLang === 'hi' ? '6. उत्पाद बाज़ार मूल्य' : '6. Product Market Value'}</span>
+              <span>{currentLang === 'hi' ? '6. मूल्य निर्धारण सुझाव' : '6. Pricing Suggestion'}</span>
             </h3>
           </div>
 
-          <p style={{ fontSize: '0.8125rem', color: 'var(--color-navy-muted)', marginBottom: '1rem' }}>
-            Recommended retail pricing benchmarked against local mandi and tehsil rates:
-          </p>
+          {reportData?.pricing_suggestion ? (
+            <div style={{ marginTop: '0.75rem' }}>
+              <div style={{ backgroundColor: 'var(--color-emerald-soft)', border: '1px solid var(--color-emerald-border)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-emerald)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '4px' }}>
+                  AI Pricing Recommendation
+                </div>
+                <p style={{ fontSize: '0.875rem', color: '#1E293B', lineHeight: 1.5, whiteSpace: 'pre-line' }}>
+                  {reportData.pricing_suggestion}
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              <p style={{ fontSize: '0.8125rem', color: 'var(--color-navy-muted)', marginBottom: '1rem' }}>
+                Recommended retail pricing benchmarked against local mandi and tehsil rates:
+              </p>
 
-          <div className="price-benchmark-box">
-            <div style={{ fontSize: '0.75rem', color: 'var(--color-navy-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
-              Market Benchmark Price
-            </div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-navy)', marginTop: '4px' }}>
-              {insights.pricing.benchmark}
-            </div>
-          </div>
+              <div className="price-benchmark-box">
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-navy-muted)', fontWeight: 600, textTransform: 'uppercase' }}>
+                  Market Benchmark Price
+                </div>
+                <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-navy)', marginTop: '4px' }}>
+                  {insights.pricing.benchmark}
+                </div>
+              </div>
 
-          <div style={{ backgroundColor: 'var(--color-emerald-soft)', border: '1px solid var(--color-emerald-border)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
-            <div style={{ fontSize: '0.75rem', color: 'var(--color-emerald)', fontWeight: 700, textTransform: 'uppercase' }}>
-              Suggested Selling Range
-            </div>
-            <div style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-emerald)', marginTop: '2px' }}>
-              {insights.pricing.retailSuggested}
-            </div>
-          </div>
+              <div style={{ backgroundColor: 'var(--color-emerald-soft)', border: '1px solid var(--color-emerald-border)', borderRadius: '8px', padding: '1rem', marginBottom: '1rem' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--color-emerald)', fontWeight: 700, textTransform: 'uppercase' }}>
+                  Suggested Selling Range
+                </div>
+                <div style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--color-emerald)', marginTop: '2px' }}>
+                  {insights.pricing.retailSuggested}
+                </div>
+              </div>
 
-          <div style={{ fontSize: '0.8125rem', color: 'var(--color-navy-subtle)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ fontWeight: 700, color: 'var(--color-navy)' }}>Estimated Margin:</span>
-            <span className="badge badge-emerald">{insights.pricing.marginPotential}</span>
-          </div>
+              <div style={{ fontSize: '0.8125rem', color: 'var(--color-navy-subtle)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <span style={{ fontWeight: 700, color: 'var(--color-navy)' }}>Estimated Margin:</span>
+                <span className="badge badge-emerald">{insights.pricing.marginPotential}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
   );
 }
+
