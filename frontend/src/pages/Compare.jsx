@@ -12,8 +12,20 @@ import {
   ArrowRight,
   TrendingUp,
   Download,
+  Layers,
 } from 'lucide-react';
-import FeasibilityReport from '../components/FeasibilityReport/FeasibilityReport';
+import FeasibilityReport, {
+  getCategoryInsights,
+  OptionHeaderCard,
+  MarketReachCard,
+  OpportunityAnalysisCard,
+  SwotQuadrantCard,
+  LocalThreatsCard,
+  CompetitorMappingCard,
+  PricingSuggestionCard,
+} from '../components/FeasibilityReport/FeasibilityReport';
+import DataSourceBadge from '../components/FeasibilityReport/DataSourceBadge';
+import ReportChat from '../components/FeasibilityReport/ReportChat';
 import { getFeasibilityReport, getComparisonVerdict } from '../lib/api';
 import { exportReportToPdf } from '../lib/pdfExport';
 import { DISTRICT_CATEGORIES } from '../lib/districtCategories';
@@ -137,6 +149,9 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
       setPdfExporting(false);
     }
   };
+
+  const insightsA = reportA ? getCategoryInsights(categoryA) : null;
+  const insightsB = reportB ? getCategoryInsights(categoryB) : null;
 
   return (
     <div className="container dashboard-container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
@@ -481,7 +496,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
               <div style={{ backgroundColor: '#FFFFFF', borderRadius: '8px', padding: '1rem', border: '1px solid #A7F3D0' }}>
                 <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: '#047857', textTransform: 'uppercase', marginBottom: '0.375rem', display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
                   <CheckCircle2 size={16} />
-                  <span>{currentLang === 'hi' ? 'सिफारिश का कारण' : 'Why This Option Win'}</span>
+                  <span>{currentLang === 'hi' ? 'सिफारिश का कारण' : 'Why This Option Wins'}</span>
                 </div>
                 <p style={{ fontSize: '0.875rem', color: '#1E293B', lineHeight: 1.55, margin: 0 }}>
                   {verdict.reasoning}
@@ -512,86 +527,102 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
             </h3>
 
             <div className="compare-grid-container">
-              {/* Left Column: Category A */}
-              <div
-                className="compare-report-column"
-                style={{
-                  borderTop: verdict?.recommended_category === categoryA ? '4px solid #059669' : '1px solid #CBD5E1',
-                  borderRadius: '8px',
-                  minWidth: 0,
-                  width: '100%',
-                  overflow: 'hidden',
-                }}
-              >
-                <div
-                  style={{
-                    backgroundColor: verdict?.recommended_category === categoryA ? '#ECFDF5' : '#F8FAFC',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px 8px 0 0',
-                    border: '1px solid #CBD5E1',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
-                    Option A: {categoryA}
-                  </h4>
-                  {verdict?.recommended_category === categoryA && (
-                    <span className="badge badge-emerald" style={{ fontSize: '0.75rem' }}>
-                      Recommended Winner
-                    </span>
-                  )}
-                </div>
-
-                {/* Reused FeasibilityReport Component for Option A */}
-                <FeasibilityReport
-                  location={district}
-                  category={categoryA}
-                  currentLang={currentLang}
-                  reportData={reportA}
-                />
+              {/* Row 1: Header / Title Cards */}
+              <div className="compare-section-row">
+                <OptionHeaderCard optionLabel="Option A" category={categoryA} verdict={verdict} currentLang={currentLang} />
+                <OptionHeaderCard optionLabel="Option B" category={categoryB} verdict={verdict} currentLang={currentLang} />
               </div>
 
-              {/* Right Column: Category B */}
+              {/* Row 2: Data Credibility Badges */}
+              <div className="compare-section-row">
+                <div>
+                  <DataSourceBadge dataConfidence={reportA?.data_confidence} sources={reportA?.sources} currentLang={currentLang} />
+                </div>
+                <div>
+                  <DataSourceBadge dataConfidence={reportB?.data_confidence} sources={reportB?.sources} currentLang={currentLang} />
+                </div>
+              </div>
+
+              {/* Row 3: Market Reach */}
+              <div className="compare-section-row">
+                <MarketReachCard location={district} category={categoryA} reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <MarketReachCard location={district} category={categoryB} reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 4: Opportunity Analysis */}
+              <div className="compare-section-row">
+                <OpportunityAnalysisCard location={district} category={categoryA} reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <OpportunityAnalysisCard location={district} category={categoryB} reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* SWOT Matrix Section Banner */}
               <div
-                className="compare-report-column"
                 style={{
-                  borderTop: verdict?.recommended_category === categoryB ? '4px solid #059669' : '1px solid #CBD5E1',
+                  backgroundColor: '#F8FAFC',
+                  border: '1px solid #E2E8F0',
                   borderRadius: '8px',
-                  minWidth: 0,
-                  width: '100%',
-                  overflow: 'hidden',
+                  padding: '0.75rem 1rem',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontWeight: 700,
+                  color: '#0F172A',
+                  fontSize: '0.9375rem',
+                  margin: '0.5rem 0',
                 }}
               >
-                <div
-                  style={{
-                    backgroundColor: verdict?.recommended_category === categoryB ? '#ECFDF5' : '#F8FAFC',
-                    padding: '0.75rem 1rem',
-                    borderRadius: '8px 8px 0 0',
-                    border: '1px solid #CBD5E1',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
-                    Option B: {categoryB}
-                  </h4>
-                  {verdict?.recommended_category === categoryB && (
-                    <span className="badge badge-emerald" style={{ fontSize: '0.75rem' }}>
-                      Recommended Winner
-                    </span>
-                  )}
-                </div>
+                <Layers size={18} className="text-emerald" />
+                <span>
+                  {currentLang === 'hi' ? '3. स्वॉट विश्लेषण - साइड-बाय-साइड (SWOT Strategy Matrix)' : '3. Side-by-Side SWOT Strategy Matrix'}
+                </span>
+              </div>
 
-                {/* Reused FeasibilityReport Component for Option B */}
-                <FeasibilityReport
-                  location={district}
-                  category={categoryB}
-                  currentLang={currentLang}
-                  reportData={reportB}
-                />
+              {/* Row 5: SWOT Strengths */}
+              <div className="compare-section-row">
+                <SwotQuadrantCard type="strengths" reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <SwotQuadrantCard type="strengths" reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 6: SWOT Weaknesses */}
+              <div className="compare-section-row">
+                <SwotQuadrantCard type="weaknesses" reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <SwotQuadrantCard type="weaknesses" reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 7: SWOT Opportunities */}
+              <div className="compare-section-row">
+                <SwotQuadrantCard type="opportunities" reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <SwotQuadrantCard type="opportunities" reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 8: SWOT Threats */}
+              <div className="compare-section-row">
+                <SwotQuadrantCard type="threats" reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <SwotQuadrantCard type="threats" reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 9: Local Threats */}
+              <div className="compare-section-row">
+                <LocalThreatsCard reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <LocalThreatsCard reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 10: Competitor Mapping */}
+              <div className="compare-section-row">
+                <CompetitorMappingCard reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <CompetitorMappingCard reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 11: Pricing Suggestion */}
+              <div className="compare-section-row">
+                <PricingSuggestionCard reportData={reportA} insights={insightsA} currentLang={currentLang} />
+                <PricingSuggestionCard reportData={reportB} insights={insightsB} currentLang={currentLang} />
+              </div>
+
+              {/* Row 12: Feasibility Report AI Assistant Chatbots */}
+              <div className="compare-section-row">
+                <ReportChat district={district} businessCategory={categoryA} report={reportA || insightsA} currentLang={currentLang} suggestedQuestions={reportA?.suggested_questions} />
+                <ReportChat district={district} businessCategory={categoryB} report={reportB || insightsB} currentLang={currentLang} suggestedQuestions={reportB?.suggested_questions} />
               </div>
             </div>
           </div>
