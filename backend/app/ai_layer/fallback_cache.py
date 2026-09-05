@@ -3,7 +3,7 @@ Fallback cache for feasibility reports.
 This module acts as an on-stage safety net if the live Gemini API call fails during judging
 or network interruptions.
 
-REMINDER: Ghaziabad's entry reflects real OSM business density data (107 retail businesses), updated Sep 2026. Meerut/retail added Sep 2026 using real OSM business data (80 retail businesses). Sitapur and Varanasi still have no cached fallback — add before final demo if those districts will be shown.
+REMINDER: All four demo districts (Ghaziabad/retail, Meerut/retail, Varanasi/retail, Prayagraj/textiles) now have verified fallback coverage using real OSM business data as of Sep 2026.
 """
 
 from typing import Any, Dict, Optional
@@ -103,6 +103,89 @@ FALLBACK_REPORTS: Dict[str, Dict[str, Any]] = {
             "focused on value to match the local purchasing capacity. It is recommended to offer a variety "
             "of products that provide good utility, ensuring they are affordable enough to fit into the "
             "local household budget."
+        ),
+    },
+    "varanasi|retail": {
+        "market_reach": (
+            "With a high population density of 2395 persons per sq. km, your retail shop will have a large number of "
+            "potential customers living in close proximity. Since 56.6% of the district population resides in rural areas, "
+            "locating your business to serve these rural communities could significantly expand your customer base."
+        ),
+        "opportunity_analysis": (
+            "The retail category is well-suited for a district with over 3.6 million people and a steady annual per capita "
+            "income of INR 118,000. This demographic provides a consistent volume of potential buyers looking for essential "
+            "and daily-use goods."
+        ),
+        "swot": {
+            "strengths": (
+                "Your primary strength is the high population density in Varanasi, which ensures a high footfall of potential "
+                "customers near your business site. The large rural population segment offers a specific, sizeable market for "
+                "retail items that may not be available locally."
+            ),
+            "weaknesses": (
+                "The provided data does not specify the exact locations of existing businesses or the specific types of retail "
+                "goods currently sold, making it difficult to assess exact gaps in the market. Furthermore, while the average income "
+                "is known, the data does not detail spending habits, which may influence demand for premium retail items."
+            ),
+            "opportunities": (
+                "You have the opportunity to serve a significant rural population that may currently have limited access to "
+                "centralized retail options. By targeting the high-density areas, you can maximize your reach to thousands of "
+                "households within a small radius."
+            ),
+            "threats": (
+                "The presence of 68 already registered retail businesses indicates that you will be entering a market where "
+                "competition is already established. You will need to differentiate your offerings to attract customers who "
+                "may already have other retail shopping options available to them."
+            ),
+        },
+        "competitor_mapping": (
+            "There are 68 registered businesses currently operating in this retail sector within the district. This number "
+            "suggests that the market is active, requiring you to clearly understand what goods your neighbors are selling to "
+            "ensure you offer something unique or essential."
+        ),
+        "pricing_suggestion": (
+            "Given the annual per capita income of INR 118,000, it is advisable to keep your pricing competitive and focused on "
+            "value. Offering goods that align with the everyday budget needs of the local residents will likely ensure steady sales turnover."
+        ),
+    },
+    "prayagraj|textiles": {
+        "market_reach": (
+            "With a large total population of nearly 4.5 million, there is a very broad potential customer base for textile goods. "
+            "Since 88.2% of the people live in rural areas, your products should be designed for rural lifestyles and preferences. "
+            "The high population density of 781 persons per sq. km makes it easier to reach many customers in a concentrated area."
+        ),
+        "opportunity_analysis": (
+            "Textiles are a daily necessity, making them a suitable business choice for a region with a large rural population. "
+            "Given the annual per capita income of INR 62,000, there is a consistent demand for affordable and durable clothing. "
+            "Focusing on essential textile products will align well with the spending habits of the local community."
+        ),
+        "swot": {
+            "strengths": (
+                "The primary strength is the massive rural population base which ensures a high demand for clothing and fabric "
+                "products. Being located in a district with such a dense population provides a clear, reachable target market."
+            ),
+            "weaknesses": (
+                "The relatively low annual per capita income of INR 62,000 limits the amount of money customers can spend on "
+                "premium or high-end textile products. You will have to manage your business carefully as the local spending power is modest."
+            ),
+            "opportunities": (
+                "The high rural population share offers a significant chance to provide everyday wear and utility textiles that the "
+                "local community regularly requires. By focusing on bulk demand from the dense local population, you can build a stable customer base."
+            ),
+            "threats": (
+                "There are already 105 registered businesses in the textile sector, which means you will face active local competition. "
+                "You must differentiate your products to ensure customers choose your business over these existing shops."
+            ),
+        },
+        "competitor_mapping": (
+            "There are 105 registered textile businesses already operating in the district, indicating an established market presence. "
+            "While this confirms that textiles are a viable business, you will need to offer something unique or better service to stand "
+            "out among these existing competitors."
+        ),
+        "pricing_suggestion": (
+            "Because the annual per capita income is INR 62,000, your pricing must be very affordable and budget-friendly for the "
+            "average household. Avoid high-end luxury pricing, as it may be out of reach for most of your potential customers. "
+            "Focus on clear, value-based pricing that fits into a typical rural family's yearly budget."
         ),
     },
 }

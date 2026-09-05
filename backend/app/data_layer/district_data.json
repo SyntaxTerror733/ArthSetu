@@ -30,20 +30,19 @@
       "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (170 verified businesses surveyed, excluding 8 low-quality unnamed entries). Population, income, and density figures still placeholder pending Census data. Replaces Bareilly as a demo district."
     },
     {
-      "district": "Sitapur",
+      "district": "Prayagraj",
       "state": "Uttar Pradesh",
       "population": 4483992,
       "rural_population_percent": 88.2,
       "population_density_per_sqkm": 781,
       "sector_business_density": {
-        "dairy": 680,
-        "textiles": 110,
-        "retail": 520,
-        "food_processing": 410,
-        "handicrafts": 140
+        "retail": 79,
+        "textiles": 105,
+        "dairy": 6,
+        "food_processing": 27
       },
       "per_capita_income_annual_inr": 62000,
-      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+      "notes": "Business density figures sourced from OpenStreetMap business listings (498 verified entries surveyed). Population, income, and density figures still placeholder pending Census data. Replaces Sitapur as a demo district."
     },
     {
       "district": "Varanasi",
@@ -52,14 +51,12 @@
       "rural_population_percent": 56.6,
       "population_density_per_sqkm": 2395,
       "sector_business_density": {
-        "dairy": 310,
-        "textiles": 1150,
-        "retail": 1280,
-        "food_processing": 390,
-        "handicrafts": 1850
+        "retail": 68,
+        "dairy": 10,
+        "food_processing": 30
       },
       "per_capita_income_annual_inr": 118000,
-      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+      "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (127 verified businesses surveyed). Population, income, and density figures still placeholder pending Census data."
     }
   ]
 }
