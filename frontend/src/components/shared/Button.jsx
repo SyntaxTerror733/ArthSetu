@@ -1,7 +1,7 @@
 import React from 'react';
 
 /**
- * Reusable Button Component for ArthSetu
+ * Reusable Button Component for VITAARA
  * Supports primary emerald styling, subtle hover elevations, and accessible states.
  */
 export default function Button({

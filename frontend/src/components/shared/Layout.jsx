@@ -17,7 +17,7 @@ import ThemeToggle from './ThemeToggle';
  * Layout Component:
  * - Top Navbar with:
  *   - LEFT: Hamburger menu icon
- *   - CENTER: ArthSetu logo & branding horizontally centered
+ *   - CENTER: VITAARA logo & branding horizontally centered
  *   - RIGHT: Language toggle & Dark/Light theme toggle
  * - Left-side Navigation Drawer with Home, Compare, How It Works, and About links
  * - Clean minimal Footer
@@ -133,14 +133,14 @@ export default function Layout({
                     e.preventDefault();
                     handleNavItemClick('home');
                   }}
-                  aria-label="ArthSetu Home"
+                  aria-label="VITAARA Home"
                 >
                   <div className="brand-icon" aria-hidden="true">
                     <Landmark size={26} strokeWidth={2.2} />
                   </div>
                   <div className="brand-text">
                     <span className="brand-name">
-                      Arth<span>Setu</span>
+                      VITA<span>ARA</span>
                     </span>
                     <span className="brand-tagline">
                       {currentLang === 'hi'
@@ -207,7 +207,7 @@ export default function Layout({
                 </button>
               </div>
 
-              {/* CENTER: ArthSetu Logo & Branding */}
+              {/* CENTER: VITAARA Logo & Branding */}
               <div className="navbar-center-branding">
                 <a
                   href="/"
@@ -216,14 +216,14 @@ export default function Layout({
                     e.preventDefault();
                     handleNavItemClick('home');
                   }}
-                  aria-label="ArthSetu Home"
+                  aria-label="VITAARA Home"
                 >
                   <div className="brand-icon" aria-hidden="true">
                     <Landmark size={26} strokeWidth={2.2} />
                   </div>
                   <div className="brand-text">
                     <span className="brand-name">
-                      Arth<span>Setu</span>
+                      VITA<span>ARA</span>
                     </span>
                     <span className="brand-tagline">
                       {currentLang === 'hi'
@@ -274,7 +274,7 @@ export default function Layout({
             </div>
             <div className="brand-text">
               <span className="brand-name" style={{ fontSize: '1.2rem' }}>
-                Arth<span>Setu</span>
+                VITA<span>ARA</span>
               </span>
             </div>
           </div>
@@ -345,7 +345,7 @@ export default function Layout({
           <div className="footer-top">
             <div className="footer-brand">
               <div className="footer-logo">
-                Arth<span>Setu</span>
+                VITA<span>ARA</span>
               </div>
               <p className="footer-tagline">
                 {currentLang === 'hi'
@@ -434,7 +434,7 @@ export default function Layout({
 
           <div className="footer-bottom">
             <p>
-              © {new Date().getFullYear()} ArthSetu. Smart India Hackathon Initiative.
+              © {new Date().getFullYear()} VITAARA. Smart India Hackathon Initiative.
             </p>
             <p className="text-muted">
               {currentLang === 'hi'

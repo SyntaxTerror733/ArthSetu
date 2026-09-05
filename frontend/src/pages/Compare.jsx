@@ -122,7 +122,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
       const cleanDist = district.replace(/[^a-zA-Z0-9]/g, '_');
       const cleanCatA = categoryA.replace(/[^a-zA-Z0-9]/g, '_');
       const cleanCatB = categoryB.replace(/[^a-zA-Z0-9]/g, '_');
-      const filename = `ArthSetu_Comparison_${cleanDist}_${cleanCatA}_vs_${cleanCatB}.pdf`;
+      const filename = `VITAARA_Comparison_${cleanDist}_${cleanCatA}_vs_${cleanCatB}.pdf`;
 
       await exportReportToPdf(pdfRef.current, filename);
     } catch (err) {

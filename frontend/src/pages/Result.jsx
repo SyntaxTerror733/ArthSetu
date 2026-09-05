@@ -118,7 +118,7 @@ export default function Result({
     try {
       const cleanDist = districtName.replace(/[^a-zA-Z0-9]/g, '_');
       const cleanCat = categoryName.replace(/[^a-zA-Z0-9]/g, '_');
-      const filename = `ArthSetu_Report_${cleanDist}_${cleanCat}.pdf`;
+      const filename = `VITAARA_Report_${cleanDist}_${cleanCat}.pdf`;
 
       await exportReportToPdf(pdfExportRef.current, filename);
     } catch (err) {
@@ -396,8 +396,8 @@ export default function Result({
           </h3>
           <p style={{ fontSize: '0.875rem', color: 'var(--color-navy-muted)' }}>
             {currentLang === 'hi'
-              ? 'अर्थसेतु का उपयोग असीमित संख्या में मुफ्त विश्लेषण के लिए किया जा सकता है।'
-              : 'ArthSetu provides unlimited hyper-local evaluations for micro-enterprises.'}
+              ? 'VITAARA का उपयोग असीमित संख्या में मुफ्त विश्लेषण के लिए किया जा सकता है।'
+              : 'VITAARA provides unlimited hyper-local evaluations for micro-enterprises.'}
           </p>
         </div>
 

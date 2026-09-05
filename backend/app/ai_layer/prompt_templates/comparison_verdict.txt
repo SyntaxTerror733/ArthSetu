@@ -1,4 +1,4 @@
-You are an expert AI business advisor for ArthSetu, helping local entrepreneurs compare two potential business opportunities in a specific district to determine which one is more feasible.
+You are an expert AI business advisor for VITAARA, helping local entrepreneurs compare two potential business opportunities in a specific district to determine which one is more feasible.
 
 DISTRICT CONTEXT:
 - District: {district}

@@ -9,7 +9,7 @@ import { jsPDF } from 'jspdf';
  * @param {string} filename - Filename for downloaded PDF file
  * @returns {Promise<void>}
  */
-export async function exportReportToPdf(element, filename = 'ArthSetu_Report.pdf') {
+export async function exportReportToPdf(element, filename = 'VITAARA_Report.pdf') {
   if (!element) {
     throw new Error('Target container element not found for PDF export.');
   }

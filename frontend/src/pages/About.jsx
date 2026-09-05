@@ -15,7 +15,7 @@ import Button from '../components/shared/Button';
 
 /**
  * About Page
- * Clearly outlines the mission, vision, and core capabilities of ArthSetu.
+ * Clearly outlines the mission, vision, and core capabilities of VITAARA.
  */
 export default function About({ onNavigate, currentLang = 'en' }) {
   const capabilities = [
@@ -76,15 +76,15 @@ export default function About({ onNavigate, currentLang = 'en' }) {
         {/* About Header */}
         <div style={{ maxWidth: '800px', margin: '0 auto 3rem', textAlign: 'center' }}>
           <span className="section-tag">
-            {currentLang === 'hi' ? 'अर्थसेतु परिचय' : 'About ArthSetu'}
+            {currentLang === 'hi' ? 'VITAARA परिचय' : 'About VITAARA'}
           </span>
           <h1 className="section-title">
             {currentLang === 'hi' ? 'उद्देश्य एवं मिशन' : 'Bridging Grassroots Ambition to Viable Enterprise'}
           </h1>
           <p className="section-subtitle" style={{ fontSize: '1.125rem' }}>
             {currentLang === 'hi'
-              ? 'अर्थसेतु ग्रामीण और अर्ध-शहरी सूक्ष्म उद्यमियों के लिए एक एआई-संचालित अति-स्थानीय व्यापार सलाहकार और वित्तीय संरचना मंच है।'
-              : 'ArthSetu is an AI-driven hyper-local business advisory and financial structuring platform designed specifically for rural and semi-urban micro-entrepreneurs.'}
+              ? 'VITAARA ग्रामीण और अर्ध-शहरी सूक्ष्म उद्यमियों के लिए एक एआई-संचालित अति-स्थानीय व्यापार सलाहकार और वित्तीय संरचना मंच है।'
+              : 'VITAARA is an AI-driven hyper-local business advisory and financial structuring platform designed specifically for rural and semi-urban micro-entrepreneurs.'}
           </p>
         </div>
 
@@ -122,8 +122,8 @@ export default function About({ onNavigate, currentLang = 'en' }) {
 
           <p style={{ fontSize: '0.9375rem', color: 'var(--color-navy-subtle)', lineHeight: 1.65 }}>
             {currentLang === 'hi'
-              ? 'भारत के ग्रामीण और अर्ध-शहरी क्षेत्रों में लाखों महत्वाकांक्षी उद्यमी पर्याप्त बाज़ार जानकारी और वित्तीय योजना के अभाव में असफल हो जाते हैं। अर्थसेतु स्थानीय डेटा, जिला सांख्यिकी और सरल वित्तीय मॉडलिंग को मिलाकर हर उद्यमी को व्यवसाय शुरू करने से पहले आत्मविश्वास और स्पष्टता प्रदान करता है।'
-              : 'Millions of grassroots micro-entrepreneurs start businesses each year without access to structured feasibility reports or financial advisory. ArthSetu eliminates this gap by combining census intelligence, local supply chain analysis, and automated government credit routing into a clean, accessible tool.'}
+              ? 'भारत के ग्रामीण और अर्ध-शहरी क्षेत्रों में लाखों महत्वाकांक्षी उद्यमी पर्याप्त बाज़ार जानकारी और वित्तीय योजना के अभाव में असफल हो जाते हैं। VITAARA स्थानीय डेटा, जिला सांख्यिकी और सरल वित्तीय मॉडलिंग को मिलाकर हर उद्यमी को व्यवसाय शुरू करने से पहले आत्मविश्वास और स्पष्टता प्रदान करता है।'
+              : 'Millions of grassroots micro-entrepreneurs start businesses each year without access to structured feasibility reports or financial advisory. VITAARA eliminates this gap by combining census intelligence, local supply chain analysis, and automated government credit routing into a clean, accessible tool.'}
           </p>
         </div>
 
@@ -131,8 +131,8 @@ export default function About({ onNavigate, currentLang = 'en' }) {
         <div style={{ maxWidth: '960px', margin: '0 auto 3.5rem' }}>
           <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-navy)', textAlign: 'center', marginBottom: '2rem' }}>
             {currentLang === 'hi'
-              ? 'अर्थसेतु उद्यमियों की किस प्रकार सहायता करता है?'
-              : 'How ArthSetu Helps Entrepreneurs'}
+              ? 'VITAARA उद्यमियों की किस प्रकार सहायता करता है?'
+              : 'How VITAARA Helps Entrepreneurs'}
           </h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>

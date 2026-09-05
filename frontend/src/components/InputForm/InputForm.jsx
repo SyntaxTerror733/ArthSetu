@@ -128,8 +128,8 @@ export default function InputForm({ onSubmit, currentLang = 'en', initialData = 
             </h2>
             <p className="form-section-subtitle">
               {currentLang === 'hi'
-                ? 'कुछ बुनियादी विवरण भरें और अर्थसेतु को आपके स्थानीय अवसर का विश्लेषण करने दें।'
-                : 'Provide a few details and let ArthSetu analyze your business opportunity.'}
+                ? 'कुछ बुनियादी विवरण भरें और VITAARA को आपके स्थानीय अवसर का विश्लेषण करने दें।'
+                : 'Provide a few details and let VITAARA analyze your business opportunity.'}
             </p>
           </div>
 

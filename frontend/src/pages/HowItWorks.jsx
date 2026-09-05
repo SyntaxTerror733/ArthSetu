@@ -60,8 +60,8 @@ export default function HowItWorks({ onNavigate, currentLang = 'en' }) {
             </h1>
             <p className="section-subtitle">
               {currentLang === 'hi'
-                ? 'अर्थसेतु ग्रामीण और अर्ध-शहरी सूक्ष्म उद्यमियों को सशक्त बनाने के लिए स्थानीय डेटा और उन्नत एआई का उपयोग करता है।'
-                : 'ArthSetu harnesses hyper-local data and advanced algorithms to simplify your path from idea to viable enterprise.'}
+                ? 'VITAARA ग्रामीण और अर्ध-शहरी सूक्ष्म उद्यमियों को सशक्त बनाने के लिए स्थानीय डेटा और उन्नत एआई का उपयोग करता है।'
+                : 'VITAARA harnesses hyper-local data and advanced algorithms to simplify your path from idea to viable enterprise.'}
             </p>
           </div>
 

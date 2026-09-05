@@ -11,7 +11,7 @@ from app.routes import comparison
 load_dotenv()
 
 app = FastAPI(
-    title="Rural Biz Advisor API",
+    title="VITAARA API",
     version="0.1.0",
 )
 
@@ -33,4 +33,4 @@ app.include_router(comparison.router)
 
 @app.get("/")
 def health_check():
-    return {"status": "ok", "service": "rural-biz-advisor-api"}
+    return {"status": "ok", "service": "vitaara-api"}

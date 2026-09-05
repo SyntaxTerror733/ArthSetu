@@ -53,7 +53,7 @@ export default function App() {
   // Theme State: Default to Light, with localStorage restoration
   const [theme, setTheme] = useState(() => {
     try {
-      const savedTheme = localStorage.getItem('arthsetu_theme');
+      const savedTheme = localStorage.getItem('vitaara_theme');
       return savedTheme === 'dark' || savedTheme === 'light' ? savedTheme : 'light';
     } catch {
       return 'light';
@@ -64,7 +64,7 @@ export default function App() {
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     try {
-      localStorage.setItem('arthsetu_theme', theme);
+      localStorage.setItem('vitaara_theme', theme);
     } catch {
       // ignore storage errors
     }

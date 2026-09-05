@@ -4,7 +4,7 @@ import { Sun, Moon } from 'lucide-react';
 /**
  * ThemeToggle Component
  * Pill-shaped toggle switch for switching between Light and Dark modes.
- * Adheres to the ArthSetu design system and provides accessible controls.
+ * Adheres to the VITAARA design system and provides accessible controls.
  */
 export default function ThemeToggle({ currentTheme = 'light', onToggle }) {
   const isDark = currentTheme === 'dark';

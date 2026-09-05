@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ArthSetu Design System Tokens & Base Styles
+   VITAARA Design System Tokens & Base Styles
    Modern Government-Tech meets Fintech Startup
    ========================================================================== */
 
@@ -423,7 +423,7 @@ input, select, textarea {
   transition: background-color var(--transition-fast);
 }
 
-/* CENTER: ArthSetu Logo & Branding (Exact Visual Center) */
+/* CENTER: VITAARA Logo & Branding (Exact Visual Center) */
 .navbar-center-branding {
   justify-self: center;
   display: flex;

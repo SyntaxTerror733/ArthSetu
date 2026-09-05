@@ -4,7 +4,7 @@ import { animate, splitText, stagger } from 'animejs';
 import InputForm from '../components/InputForm/InputForm';
 
 /**
- * Home Page: Professional landing page + business input form for ArthSetu
+ * Home Page: Professional landing page + business input form for VITAARA
  */
 export default function Home({ onFormSubmit, onNavigate, currentLang = 'en', initialData = null }) {
   const formRef = useRef(null);
