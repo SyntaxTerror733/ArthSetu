@@ -8,12 +8,17 @@ import {
   AlertCircle,
   Loader2,
   HelpCircle,
+  Mic,
+  MicOff,
+  Volume2,
+  Square,
 } from 'lucide-react';
 import { useChatQuestion } from '../../hooks/useApi';
 
 /**
  * ReportChat Component
  * Interactive Q&A Chatbot for follow-up questions on the feasibility report.
+ * Features Web Speech API integration: Speech-to-Text input & Text-to-Speech output.
  * 
  * Props expected:
  * @param {string} district - District name (e.g. 'Ghaziabad')
@@ -30,13 +35,28 @@ export default function ReportChat({
   const [messages, setMessages] = useState([]);
   const [inputQuestion, setInputQuestion] = useState('');
   const [chatError, setChatError] = useState(null);
+
+  // Web Speech API States
+  const [isListening, setIsListening] = useState(false);
+  const [speakingMsgId, setSpeakingMsgId] = useState(null);
+
   const chatContainerRef = useRef(null);
+  const recognitionRef = useRef(null);
 
   const { askQuestion, loading } = useChatQuestion();
 
   // Extract clean district name
   const cleanDistrict = (district || 'Local Area').split(',')[0].trim();
   const cleanCategory = businessCategory || 'Micro Enterprise';
+
+  // Feature detection for Web Speech API
+  const SpeechRecognition =
+    typeof window !== 'undefined' &&
+    (window.SpeechRecognition || window.webkitSpeechRecognition);
+  const isSpeechRecognitionSupported = Boolean(SpeechRecognition);
+
+  const isSpeechSynthesisSupported =
+    typeof window !== 'undefined' && 'speechSynthesis' in window;
 
   const scrollToBottom = () => {
     if (chatContainerRef.current) {
@@ -53,12 +73,121 @@ export default function ReportChat({
     }
   }, [messages, loading]);
 
+  // Clean up speech recognition & synthesis on unmount
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {
+          // ignore cleanup errors
+        }
+      }
+      if (isSpeechSynthesisSupported) {
+        window.speechSynthesis.cancel();
+      }
+    };
+  }, [isSpeechSynthesisSupported]);
+
+  // 1. Speech-to-Text (Speech Input) Handler
+  const handleToggleListening = () => {
+    if (!isSpeechRecognitionSupported) return;
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.stop();
+        } catch {
+          // ignore
+        }
+      }
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0]?.[0]?.transcript;
+        if (transcript) {
+          setInputQuestion((prev) => (prev ? `${prev} ${transcript}` : transcript));
+        }
+      };
+
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognitionRef.current = recognition;
+      recognition.start();
+    } catch (err) {
+      console.error('Failed to start SpeechRecognition:', err);
+      setIsListening(false);
+    }
+  };
+
+  // 2. Text-to-Speech (Speech Output) Handler
+  const handleSpeakAnswer = (msgId, textToSpeak) => {
+    if (!isSpeechSynthesisSupported) return;
+
+    if (speakingMsgId === msgId) {
+      window.speechSynthesis.cancel();
+      setSpeakingMsgId(null);
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = currentLang === 'hi' ? 'hi-IN' : 'en-IN';
+    utterance.rate = 0.95;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => {
+      setSpeakingMsgId(msgId);
+    };
+
+    utterance.onend = () => {
+      setSpeakingMsgId(null);
+    };
+
+    utterance.onerror = (e) => {
+      console.error('Speech synthesis error:', e);
+      setSpeakingMsgId(null);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
   const handleSendQuestion = async (qText) => {
     const textToSend = qText || inputQuestion.trim();
     if (!textToSend || loading) return;
 
     // Reset error state for new attempt
     setChatError(null);
+
+    // Stop listening if active
+    if (isListening && recognitionRef.current) {
+      try {
+        recognitionRef.current.stop();
+      } catch {
+        // ignore
+      }
+      setIsListening(false);
+    }
 
     // Create user message entry
     const userMsgId = Date.now().toString();
@@ -73,7 +202,7 @@ export default function ReportChat({
     setInputQuestion('');
 
     try {
-      const res = await askQuestion(cleanDistrict, cleanCategory, textToSend, report || {});
+      const res = await askQuestion(cleanDistrict, cleanCategory, textToSend, report || {}, currentLang);
       const botMsg = {
         id: (Date.now() + 1).toString(),
         sender: 'bot',
@@ -150,15 +279,15 @@ export default function ReportChat({
             </h3>
             <p style={{ fontSize: '0.75rem', color: '#64748B', margin: 0 }}>
               {currentLang === 'hi'
-                ? 'अपनी व्यवहार्यता रिपोर्ट के बारे में कोई भी प्रश्न पूछें'
-                : `Ask follow-up questions about the ${cleanCategory} report in ${cleanDistrict}`}
+                ? 'अपनी व्यवहार्यता रिपोर्ट के बारे में कोई भी प्रश्न पूछें या बोलकर बताएं'
+                : `Ask follow-up questions by typing or speaking about ${cleanCategory} in ${cleanDistrict}`}
             </p>
           </div>
         </div>
 
         <span className="badge badge-emerald" style={{ fontSize: '0.75rem' }}>
           <Sparkles size={12} />
-          <span>Interactive AI</span>
+          <span>Voice & AI</span>
         </span>
       </div>
 
@@ -228,20 +357,51 @@ export default function ReportChat({
               alignItems: msg.sender === 'user' ? 'flex-end' : 'flex-start',
             }}
           >
-            <div
-              style={{
-                maxWidth: '85%',
-                padding: '0.75rem 1rem',
-                borderRadius: msg.sender === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
-                backgroundColor: msg.sender === 'user' ? '#059669' : '#F1F5F9',
-                color: msg.sender === 'user' ? '#FFFFFF' : '#0F172A',
-                fontSize: '0.875rem',
-                lineHeight: 1.5,
-                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
-              }}
-            >
-              {msg.text}
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', maxWidth: '88%' }}>
+              <div
+                style={{
+                  padding: '0.75rem 1rem',
+                  borderRadius: msg.sender === 'user' ? '12px 12px 2px 12px' : '12px 12px 12px 2px',
+                  backgroundColor: msg.sender === 'user' ? '#059669' : '#F1F5F9',
+                  color: msg.sender === 'user' ? '#FFFFFF' : '#0F172A',
+                  fontSize: '0.875rem',
+                  lineHeight: 1.5,
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                }}
+              >
+                {msg.text}
+              </div>
+
+              {/* Text-to-Speech Speaker Button for Bot Responses */}
+              {msg.sender === 'bot' && isSpeechSynthesisSupported && (
+                <button
+                  type="button"
+                  onClick={() => handleSpeakAnswer(msg.id, msg.text)}
+                  title={
+                    speakingMsgId === msg.id
+                      ? currentLang === 'hi' ? 'पढ़ना रोकें' : 'Stop speaking'
+                      : currentLang === 'hi' ? 'उत्तर सुनें' : 'Read aloud'
+                  }
+                  style={{
+                    marginTop: '4px',
+                    padding: '6px',
+                    borderRadius: '50%',
+                    border: 'none',
+                    backgroundColor: speakingMsgId === msg.id ? '#EF4444' : 'rgba(5, 150, 105, 0.1)',
+                    color: speakingMsgId === msg.id ? '#FFFFFF' : '#059669',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {speakingMsgId === msg.id ? <Square size={14} /> : <Volume2 size={15} />}
+                </button>
+              )}
             </div>
+
             <span
               style={{
                 fontSize: '0.6875rem',
@@ -287,28 +447,62 @@ export default function ReportChat({
       )}
 
       {/* Input Form */}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.5rem' }}>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
         <input
           type="text"
           value={inputQuestion}
           onChange={(e) => setInputQuestion(e.target.value)}
           placeholder={
-            currentLang === 'hi'
-              ? 'इस रिपोर्ट के बारे में सवाल पूछें — जैसे "यहाँ प्रतिस्पर्धा अधिक क्यों है?"'
-              : "Ask a question about this report — e.g. 'Why is competition high here?'"
+            isListening
+              ? currentLang === 'hi' ? 'सुन रहा है... बोलिए' : 'Listening to your voice...'
+              : currentLang === 'hi'
+                ? 'इस रिपोर्ट के बारे में सवाल पूछें — जैसे "यहाँ प्रतिस्पर्धा अधिक क्यों है?"'
+                : "Ask a question about this report — e.g. 'Why is competition high here?'"
           }
           disabled={loading}
           style={{
             flex: 1,
             padding: '0.625rem 0.875rem',
             borderRadius: '6px',
-            border: '1px solid var(--color-border, #CBD5E1)',
+            border: isListening ? '2px solid #EF4444' : '1px solid var(--color-border, #CBD5E1)',
             fontSize: '0.875rem',
             outline: 'none',
-            backgroundColor: '#FFFFFF',
+            backgroundColor: isListening ? '#FEF2F2' : '#FFFFFF',
             color: '#0F172A',
+            transition: 'all 0.15s ease',
           }}
         />
+
+        {/* Microphone Button for Speech Input (only if supported) */}
+        {isSpeechRecognitionSupported && (
+          <button
+            type="button"
+            onClick={handleToggleListening}
+            disabled={loading}
+            title={
+              isListening
+                ? currentLang === 'hi' ? 'सुनना बंद करें' : 'Stop listening'
+                : currentLang === 'hi' ? 'बोलकर सवाल पूछें' : 'Speak your question'
+            }
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '40px',
+              height: '40px',
+              borderRadius: '6px',
+              backgroundColor: isListening ? '#EF4444' : 'rgba(5, 150, 105, 0.1)',
+              color: isListening ? '#FFFFFF' : '#059669',
+              border: isListening ? 'none' : '1px solid rgba(5, 150, 105, 0.3)',
+              cursor: loading ? 'not-allowed' : 'pointer',
+              flexShrink: 0,
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {isListening ? <MicOff size={18} /> : <Mic size={18} />}
+          </button>
+        )}
+
         <button
           type="submit"
           disabled={loading || !inputQuestion.trim()}
@@ -326,6 +520,7 @@ export default function ReportChat({
             border: 'none',
             cursor: loading || !inputQuestion.trim() ? 'not-allowed' : 'pointer',
             opacity: loading || !inputQuestion.trim() ? 0.6 : 1,
+            flexShrink: 0,
             transition: 'all 0.15s ease',
           }}
         >

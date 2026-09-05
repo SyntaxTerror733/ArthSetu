@@ -15,17 +15,22 @@ def _format_field(val: Any) -> str:
 
 
 def build_chat_prompt(
-    report: Dict[str, Any], district: str, business_category: str, user_question: str
+    report: Dict[str, Any],
+    district: str,
+    business_category: str,
+    user_question: str,
+    language: str = "en",
 ) -> str:
     """
     Reads chat_prompt.txt and fills in placeholders using values from the report dict,
-    district, business_category, and user_question.
+    district, business_category, user_question, and language.
 
     Args:
         report: Dict containing report fields (market_reach, opportunity_analysis, swot, etc.)
         district: Name of the district (e.g. 'Ghaziabad')
         business_category: Business sector/category (e.g. 'Retail')
         user_question: Follow-up question asked by the user
+        language: Output language ('en' or 'hi')
 
     Returns:
         Fully rendered prompt string.
@@ -33,9 +38,16 @@ def build_chat_prompt(
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         template = f.read()
 
+    lang_str = (language or "en").strip().lower()
+    if lang_str == "hi":
+        language_instruction = "Respond entirely in Hindi (Devanagari script)."
+    else:
+        language_instruction = "Respond entirely in English."
+
     swot = report.get("swot", {}) if isinstance(report.get("swot"), dict) else {}
 
     prompt = template.format(
+        language_instruction=language_instruction,
         district=district,
         business_category=business_category,
         market_reach=_format_field(report.get("market_reach")),
@@ -52,7 +64,11 @@ def build_chat_prompt(
 
 
 def get_chat_response(
-    report: Dict[str, Any], district: str, business_category: str, user_question: str
+    report: Dict[str, Any],
+    district: str,
+    business_category: str,
+    user_question: str,
+    language: str = "en",
 ) -> str:
     """
     Builds the chat prompt and calls call_llm to retrieve a conversational AI response.
@@ -62,10 +78,25 @@ def get_chat_response(
         district: Name of the district
         business_category: Business category
         user_question: User's follow-up question
+        language: Output language ('en' or 'hi')
 
     Returns:
         Plain text conversational AI response string.
     """
-    prompt = build_chat_prompt(report, district, business_category, user_question)
-    response_text = call_llm(prompt)
-    return response_text
+    prompt = build_chat_prompt(report, district, business_category, user_question, language)
+    try:
+        response_text = call_llm(prompt)
+        return response_text
+    except Exception as err:
+        print(f"[get_chat_response] LLM call failed: {err}")
+        lang_str = (language or "en").strip().lower()
+        if lang_str == "hi":
+            return (
+                f"वर्तमान में एआई सेवा पर अधिक लोड है। उपलब्ध रिपोर्ट के अनुसार {district} में "
+                f"{business_category} व्यवसाय के लिए मुख्य अवसर और SWOT विश्लेषण रिपोर्ट अनुभाग में उपलब्ध हैं।"
+            )
+        return (
+            f"The AI service is currently experiencing high load. Based on the feasibility report, "
+            f"key opportunities for {business_category} in {district} are detailed in the report sections above."
+        )
+

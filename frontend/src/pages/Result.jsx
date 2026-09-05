@@ -71,11 +71,11 @@ export default function Result({
   // Trigger backend feasibility report API call on mount or parameters change
   useEffect(() => {
     if (districtName && categoryName) {
-      getReport(districtName, categoryName).catch((err) => {
+      getReport(districtName, categoryName, currentLang).catch((err) => {
         console.error('Feasibility report API call failed:', err);
       });
     }
-  }, [districtName, categoryName, getReport]);
+  }, [districtName, categoryName, currentLang, getReport]);
 
   const handleRetryFinancials = () => {
     if (marginCap > 0) {
@@ -85,7 +85,7 @@ export default function Result({
 
   const handleRetryReport = () => {
     if (districtName && categoryName) {
-      getReport(districtName, categoryName);
+      getReport(districtName, categoryName, currentLang);
     }
   };
 

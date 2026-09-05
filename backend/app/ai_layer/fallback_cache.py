@@ -3,8 +3,7 @@ Fallback cache for feasibility reports.
 This module acts as an on-stage safety net if the live Gemini API call fails during judging
 or network interruptions.
 
-REMINDER: Add pre-generated fallback report entries for the other 3 demo districts
-(Bareilly, Sitapur, Varanasi) before the final demo/submission.
+REMINDER: Ghaziabad's entry reflects real OSM business density data (107 retail businesses), updated Sep 2026. Meerut/retail added Sep 2026 using real OSM business data (80 retail businesses). Sitapur and Varanasi still have no cached fallback — add before final demo if those districts will be shown.
 """
 
 from typing import Any, Dict, Optional
@@ -12,58 +11,100 @@ from typing import Any, Dict, Optional
 FALLBACK_REPORTS: Dict[str, Dict[str, Any]] = {
     "ghaziabad|retail": {
         "market_reach": (
-            "The district has a high population density of 3,971 persons per square kilometer "
-            "within a total population of 4,681,645 people. With a rural population share of 32.5%, "
-            "the majority of potential customers live in urban areas, while nearly a third reside "
-            "in rural villages. This dense concentration of residents allows a retail enterprise "
-            "to reach a large customer base within a compact geographic area."
+            "With a total population of over 4.6 million and a high density of 3971 persons per sq. km, "
+            "your retail business has access to a very large and concentrated customer base. "
+            "Approximately 1.5 million people live in rural areas of Ghaziabad, providing a significant "
+            "potential market if you locate your shop to serve these communities effectively."
         ),
         "opportunity_analysis": (
-            "Setting up a retail business in Ghaziabad aligns well with the district's annual "
-            "per capita income of INR 165,000. With a large population base of over 4.68 million "
-            "people, there is continuous household demand for retail goods. The combination of "
-            "high population density and stable income levels supports daily retail trade."
+            "The annual per capita income of INR 165000 suggests that local residents have a consistent "
+            "level of disposable income to spend on retail goods. The combination of a dense population "
+            "and this income level creates a steady environment for a retail business to operate "
+            "throughout the year."
         ),
         "swot": {
             "strengths": (
-                "A major strength is the large district population of 4,681,645, which offers a "
-                "massive potential customer base. High population density of 3,971 persons per "
-                "square kilometer ensures consistent foot traffic for a retail shop. An annual "
-                "per capita income of INR 165,000 provides local households with steady purchasing power."
+                "The high population density ensures that your business will have a large number of "
+                "potential customers living within a short distance. You are positioned to serve a "
+                "market that includes both urban dwellers and a substantial rural population."
             ),
             "weaknesses": (
-                "Balancing inventory for both the 32.5% rural population and the larger urban "
-                "population requires careful product selection. The provided dataset lacks "
-                "specific information on local rental costs, road infrastructure, or supply chain "
-                "networks. Due to these data limitations, exact store placement challenges cannot "
-                "be fully analyzed."
+                "The provided data does not specify the literacy rate or local infrastructure quality, "
+                "so it is difficult to determine how these factors might affect daily store operations. "
+                "Additionally, the data does not break down consumer preferences, making it hard to predict "
+                "exactly which retail products are in highest demand."
             ),
             "opportunities": (
-                "Serving a district of over 4.68 million people presents continuous opportunities "
-                "to supply everyday goods. The annual per capita income of INR 165,000 supports "
-                "consistent consumer spending on retail items. A retailer can grow by catering "
-                "to both the urban majority and the 32.5% rural population share."
+                "You can focus on stocking essential goods that cater to the daily needs of the 32.5% "
+                "rural population segment. By targeting the needs of this specific demographic, you can "
+                "build a loyal customer base within the district."
             ),
             "threats": (
-                "The presence of 1,450 existing registered retail businesses indicates intense "
-                "local competition in this sector. Competing with established sellers for customer "
-                "loyalty poses a direct risk to a new entrant. Furthermore, the dataset does not "
-                "account for unregistered vendors, which could add unmeasured competitive pressure."
+                "There are already 107 registered businesses in the retail sector, which indicates a "
+                "competitive environment. You must ensure your service or product selection is distinct "
+                "enough to attract customers away from established competitors."
             ),
         },
         "competitor_mapping": (
-            "There are already 1,450 registered retail businesses operating within the district. "
-            "This high business count shows that the retail sector is active, but highly crowded. "
-            "A new enterprise will need to differentiate itself through good customer service "
-            "and reliable stock to compete with these 1,450 existing traders."
+            "With 107 existing registered retail businesses, the market is moderately crowded. "
+            "You will need to carefully observe the goods offered by these competitors to ensure your "
+            "store provides items that are currently missing or in high demand."
         ),
         "pricing_suggestion": (
-            "Pricing should be structured to match the district's annual per capita income of "
-            "INR 165,000. Offering affordable, value-focused prices will appeal to both urban "
-            "shoppers and the 32.5% rural population share. Keeping profit margins competitive "
-            "will help build a regular customer base in a market with 1,450 existing competitors."
+            "Your pricing should reflect the annual per capita income of INR 165000, which suggests "
+            "a preference for value-oriented products. Focus on pricing your items to be affordable "
+            "for the average resident while maintaining a clear and consistent pricing structure."
         ),
-    }
+    },
+    "meerut|retail": {
+        "market_reach": (
+            "With a population density of 1084 persons per sq. km, your business is located in a highly "
+            "concentrated area, allowing for easy access to a large number of potential customers. "
+            "Since 65.2% of the 4.4 million residents live in rural areas, your store can serve a vast "
+            "customer base that may have limited access to urban retail centers."
+        ),
+        "opportunity_analysis": (
+            "The retail sector is well-suited for a district with such high population density, as there "
+            "is a constant demand for daily goods among a large local population. With an annual per capita "
+            "income of INR 92000, residents have steady, albeit modest, purchasing power that can support "
+            "a retail enterprise focused on everyday essentials."
+        ),
+        "swot": {
+            "strengths": (
+                "Your primary strength is the massive rural population base which provides a consistent "
+                "and loyal customer pool. The high population density ensures that your business location "
+                "will benefit from a high volume of foot traffic."
+            ),
+            "weaknesses": (
+                "The provided data does not give information about local supply chains or infrastructure, "
+                "which are critical for retail success. We cannot determine if transportation costs or "
+                "logistics will limit your ability to keep shelves stocked efficiently."
+            ),
+            "opportunities": (
+                "You have the potential to serve a large segment of the 4.4 million people living in the "
+                "district who are currently under-served by existing formal retail outlets. By focusing on "
+                "essential goods that cater to both rural and urban preferences, you can capture a "
+                "significant share of the local market."
+            ),
+            "threats": (
+                "The existing 80 registered businesses in the retail sector indicate that there is already "
+                "a degree of competition for the local consumer's money. You must consider if the market "
+                "can support additional outlets without diluting the revenue potential for everyone."
+            ),
+        },
+        "competitor_mapping": (
+            "There are currently 80 registered retail businesses operating in this district. This indicates "
+            "that while there is an established retail presence, the ratio of businesses to a population of "
+            "over 4 million suggests that the market may still have space for new entrants who offer "
+            "better accessibility or service."
+        ),
+        "pricing_suggestion": (
+            "Given the annual per capita income of INR 92000, your pricing should remain competitive and "
+            "focused on value to match the local purchasing capacity. It is recommended to offer a variety "
+            "of products that provide good utility, ensuring they are affordable enough to fit into the "
+            "local household budget."
+        ),
+    },
 }
 
 

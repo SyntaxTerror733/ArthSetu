@@ -7,30 +7,27 @@
       "rural_population_percent": 32.5,
       "population_density_per_sqkm": 3971,
       "sector_business_density": {
-        "dairy": 120,
-        "textiles": 310,
-        "retail": 1450,
-        "food_processing": 280,
-        "handicrafts": 90
+        "retail": 107,
+        "textiles": 40,
+        "dairy": 20,
+        "food_processing": 18
       },
       "per_capita_income_annual_inr": 165000,
-      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+      "notes": "Business density figures sourced from OpenStreetMap business listings (403 verified businesses surveyed). Population, income, and density figures still placeholder pending Census data."
     },
     {
-      "district": "Bareilly",
+      "district": "Meerut",
       "state": "Uttar Pradesh",
       "population": 4448359,
       "rural_population_percent": 65.2,
       "population_density_per_sqkm": 1084,
       "sector_business_density": {
-        "dairy": 410,
-        "textiles": 260,
-        "retail": 890,
-        "food_processing": 340,
-        "handicrafts": 520
+        "retail": 80,
+        "dairy": 21,
+        "food_processing": 39
       },
       "per_capita_income_annual_inr": 92000,
-      "notes": "PLACEHOLDER — replace with real Census/MSME data before final demo."
+      "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (170 verified businesses surveyed, excluding 8 low-quality unnamed entries). Population, income, and density figures still placeholder pending Census data. Replaces Bareilly as a demo district."
     },
     {
       "district": "Sitapur",

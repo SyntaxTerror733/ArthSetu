@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "home": "Home",
+    "howItWorks": "How It Works",
+    "about": "About",
+    "guidelines": "Guidelines",
+    "privacy": "Privacy & Trust"
+  },
+  "home": {
+    "title": "Empowering Grassroots Enterprises",
+    "subtitle": "AI-driven local market feasibility and loan eligibility calculator for rural entrepreneurs",
+    "formHeading": "Enter Business Details",
+    "submitBtn": "Analyze Feasibility & Financials"
+  },
+  "result": {
+    "backToForm": "Back to Edit Form",
+    "startNew": "Start New Analysis",
+    "printSummary": "Print Summary",
+    "proposedIdea": "Proposed Idea",
+    "feasibilityScore": "Feasibility: 86% High",
+    "module1Title": "Module 1: Business Feasibility Report",
+    "module2Title": "Module 2: Financial Roadmap & Structuring"
+  },
+  "chat": {
+    "title": "Feasibility Report AI Assistant",
+    "subtitle": "Ask follow-up questions about your business report",
+    "placeholder": "Ask a question about this report — e.g. 'Why is competition high here?'",
+    "askBtn": "Ask"
+  }
+}

@@ -17,6 +17,7 @@ class ChatRequest(BaseModel):
     business_category: str
     question: str
     report: Dict[str, Any] = Field(default_factory=dict)
+    language: str = "en"
 
 
 @router.post("/chat")
@@ -41,6 +42,7 @@ async def chat_with_report(req: ChatRequest) -> Dict[str, str]:
             district=req.district,
             business_category=req.business_category,
             user_question=req.question,
+            language=req.language,
         )
         return {"answer": answer}
     except Exception as e:

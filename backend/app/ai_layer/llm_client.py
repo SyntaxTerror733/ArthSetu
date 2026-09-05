@@ -42,12 +42,21 @@ from pathlib import Path
 TEMPLATE_PATH = Path(__file__).parent / "prompt_templates" / "feasibility_report.txt"
 
 
-def build_feasibility_prompt(district_data: dict, business_category: str) -> str:
+def build_feasibility_prompt(district_data: dict, business_category: str, language: str = "en") -> str:
     """
     Load feasibility_report.txt template and format it with district data and business category.
     """
     with open(TEMPLATE_PATH, "r", encoding="utf-8") as f:
         template = f.read()
+
+    lang_str = (language or "en").strip().lower()
+    if lang_str == "hi":
+        language_instruction = (
+            "Respond entirely in Hindi (Devanagari script). "
+            "Keep the JSON keys in English exactly as specified, but all text VALUES inside the JSON must be written in Hindi."
+        )
+    else:
+        language_instruction = "Respond entirely in English."
 
     category_key = (business_category or "").strip().lower()
     sector_density = district_data.get("sector_business_density", {})
@@ -64,6 +73,7 @@ def build_feasibility_prompt(district_data: dict, business_category: str) -> str
                     break
 
     replacements = {
+        "{language_instruction}": language_instruction,
         "{district}": str(district_data.get("district", "Unknown")),
         "{state}": str(district_data.get("state", "Uttar Pradesh")),
         "{population}": str(district_data.get("population", "N/A")),

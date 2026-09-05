@@ -48,7 +48,7 @@ export async function calculateFinancials(marginCapital) {
  * @param {string} businessCategory - Business sector/category
  * @returns {Promise<Object>} Feasibility report object
  */
-export async function getFeasibilityReport(district, businessCategory) {
+export async function getFeasibilityReport(district, businessCategory, language = 'en') {
   const response = await fetch(`${BASE_URL}/api/feasibility-report`, {
     method: 'POST',
     headers: {
@@ -57,6 +57,7 @@ export async function getFeasibilityReport(district, businessCategory) {
     body: JSON.stringify({
       district,
       business_category: businessCategory,
+      language,
     }),
   });
   return handleResponse(response);
@@ -68,9 +69,10 @@ export async function getFeasibilityReport(district, businessCategory) {
  * @param {string} businessCategory - Business category
  * @param {string} question - User question string
  * @param {Object} report - Feasibility report dictionary
+ * @param {string} [language='en'] - Output language ('en' | 'hi')
  * @returns {Promise<Object>} Object with `{ answer: string }`
  */
-export async function askChatQuestion(district, businessCategory, question, report) {
+export async function askChatQuestion(district, businessCategory, question, report, language = 'en') {
   const response = await fetch(`${BASE_URL}/api/chat`, {
     method: 'POST',
     headers: {
@@ -81,6 +83,7 @@ export async function askChatQuestion(district, businessCategory, question, repo
       business_category: businessCategory,
       question,
       report: report || {},
+      language,
     }),
   });
   return handleResponse(response);

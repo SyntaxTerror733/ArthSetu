@@ -12,6 +12,8 @@ Below is the verified district profile data for the proposed enterprise:
 - Existing Registered Businesses in this Sector: {sector_business_count}
 
 INSTRUCTIONS:
+{language_instruction}
+
 Generate a clear, practical Business Feasibility Report for this entrepreneur using ONLY the district data provided above.
 
 CRITICAL CONSTRAINTS:

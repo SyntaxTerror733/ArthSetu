@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 class FeasibilityReportRequest(BaseModel):
     district: str
     business_category: str
+    language: str = "en"
 
 
 @router.post("/feasibility-report")
@@ -26,7 +27,7 @@ def generate_feasibility_report(request: FeasibilityReportRequest):
         )
 
     try:
-        prompt = build_feasibility_prompt(district_data, request.business_category)
+        prompt = build_feasibility_prompt(district_data, request.business_category, request.language)
         raw_response = call_llm(prompt)
         report = parse_feasibility_report(raw_response)
         report["_source"] = "live_llm"
