@@ -158,10 +158,10 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
             <ArrowRightLeft size={22} />
           </div>
           <div>
-            <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A', margin: 0 }}>
+            <h1 style={{ fontSize: 'clamp(1.625rem, 3vw, 2.125rem)', fontWeight: 800, color: '#0F172A', margin: 0 }}>
               {currentLang === 'hi' ? 'व्यावसायिक तुलना एआई' : 'Business Opportunity Comparison'}
             </h1>
-            <p style={{ fontSize: '0.875rem', color: '#64748B', margin: 0 }}>
+            <p style={{ fontSize: '1rem', color: '#64748B', margin: '0.25rem 0 0' }}>
               {currentLang === 'hi'
                 ? 'अपने जिले के लिए दो अलग-अलग व्यावसायिक अवसरों की तुलना करें और एआई निष्कर्ष प्राप्त करें'
                 : 'Compare two business sectors side-by-side for your district to find the best match'}
@@ -193,7 +193,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
             <div>
               <label
                 style={{
-                  fontSize: '0.8125rem',
+                  fontSize: '0.9375rem',
                   fontWeight: 700,
                   color: '#334155',
                   display: 'block',
@@ -211,7 +211,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
                   padding: '0.625rem 0.875rem',
                   borderRadius: '6px',
                   border: '1px solid #CBD5E1',
-                  fontSize: '0.875rem',
+                  fontSize: '1rem',
                   color: '#0F172A',
                   backgroundColor: '#FFFFFF',
                   outline: 'none',
@@ -229,7 +229,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
             <div>
               <label
                 style={{
-                  fontSize: '0.8125rem',
+                  fontSize: '0.9375rem',
                   fontWeight: 700,
                   color: '#334155',
                   display: 'block',
@@ -247,7 +247,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
                   padding: '0.625rem 0.875rem',
                   borderRadius: '6px',
                   border: '1px solid #CBD5E1',
-                  fontSize: '0.875rem',
+                  fontSize: '1rem',
                   color: '#0F172A',
                   backgroundColor: '#FFFFFF',
                   outline: 'none',
@@ -265,7 +265,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
             <div>
               <label
                 style={{
-                  fontSize: '0.8125rem',
+                  fontSize: '0.9375rem',
                   fontWeight: 700,
                   color: '#334155',
                   display: 'block',
@@ -283,7 +283,7 @@ export default function Compare({ onNavigate, currentLang = 'en' }) {
                   padding: '0.625rem 0.875rem',
                   borderRadius: '6px',
                   border: '1px solid #CBD5E1',
-                  fontSize: '0.875rem',
+                  fontSize: '1rem',
                   color: '#0F172A',
                   backgroundColor: '#FFFFFF',
                   outline: 'none',

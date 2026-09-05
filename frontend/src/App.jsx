@@ -152,6 +152,7 @@ export default function App() {
         return (
           <Home
             onFormSubmit={handleFormSubmit}
+            onNavigate={handleNavigate}
             currentLang={currentLang}
             initialData={submissionData}
           />

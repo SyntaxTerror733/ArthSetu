@@ -105,66 +105,148 @@ export default function Layout({
   return (
     <div className="app-layout">
       {/* 1. TOP NAVBAR */}
-      <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
+      <header className={`site-header ${currentPage === 'home' ? 'is-home-header' : ''} ${scrolled ? 'scrolled' : ''}`}>
         <div className="container header-container">
-          <div className="navbar-grid">
-            {/* LEFT: Hamburger Menu Icon */}
-            <div className="navbar-left">
-              <button
-                type="button"
-                className="hamburger-btn"
-                onClick={() => setDrawerOpen(true)}
-                aria-label="Open navigation menu"
-                aria-expanded={drawerOpen}
-                aria-controls="navigation-drawer"
-              >
-                <span className="hamburger-box" aria-hidden="true">
-                  <span className="hamburger-line" />
-                  <span className="hamburger-line" />
-                  <span className="hamburger-line" />
-                </span>
-              </button>
-            </div>
-
-            {/* CENTER: ArthSetu Logo & Branding */}
-            <div className="navbar-center-branding">
-              <a
-                href="/"
-                className="brand-wrapper"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleNavItemClick('home');
-                }}
-                aria-label="ArthSetu Home"
-              >
-                <div className="brand-icon" aria-hidden="true">
-                  <Landmark size={22} strokeWidth={2.2} />
-                </div>
-                <div className="brand-text">
-                  <span className="brand-name">
-                    Arth<span>Setu</span>
+          {currentPage === 'home' ? (
+            <div className="navbar-grid navbar-grid-home">
+              {/* FAR LEFT: Brand Logo & Mobile Hamburger */}
+              <div className="navbar-left navbar-left-home">
+                <button
+                  type="button"
+                  className="hamburger-btn mobile-only-hamburger"
+                  onClick={() => setDrawerOpen(true)}
+                  aria-label="Open navigation menu"
+                  aria-expanded={drawerOpen}
+                  aria-controls="navigation-drawer"
+                >
+                  <span className="hamburger-box" aria-hidden="true">
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
                   </span>
-                  <span className="brand-tagline">
-                    {currentLang === 'hi'
-                      ? 'एआई-संचालित व्यापार मार्गदर्शन'
-                      : 'AI-powered Business Guidance'}
-                  </span>
-                </div>
-              </a>
-            </div>
+                </button>
 
-            {/* RIGHT: Language Toggle & Theme Toggle */}
-            <div className="navbar-right">
-              <LanguageToggle
-                currentLang={currentLang}
-                onToggle={onToggleLang}
-              />
-              <ThemeToggle
-                currentTheme={currentTheme}
-                onToggle={onToggleTheme}
-              />
+                <a
+                  href="/"
+                  className="brand-wrapper"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavItemClick('home');
+                  }}
+                  aria-label="ArthSetu Home"
+                >
+                  <div className="brand-icon" aria-hidden="true">
+                    <Landmark size={26} strokeWidth={2.2} />
+                  </div>
+                  <div className="brand-text">
+                    <span className="brand-name">
+                      Arth<span>Setu</span>
+                    </span>
+                    <span className="brand-tagline">
+                      {currentLang === 'hi'
+                        ? 'एआई-संचालित व्यापार मार्गदर्शन'
+                        : 'AI-powered Business Guidance'}
+                    </span>
+                  </div>
+                </a>
+              </div>
+
+              {/* CENTER: Inline Nav Links */}
+              <nav className="navbar-center-links" aria-label="Main Navigation">
+                <ul className="inline-nav-list">
+                  {navItems.map((item) => {
+                    const isActive = currentPage === item.id;
+                    return (
+                      <li key={item.id}>
+                        <a
+                          href={item.path}
+                          className={`inline-nav-link ${isActive ? 'active' : ''}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleNavItemClick(item.id);
+                          }}
+                          aria-current={isActive ? 'page' : undefined}
+                        >
+                          {currentLang === 'hi' ? item.labelHi : item.labelEn}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+
+              {/* FAR RIGHT: Language Toggle & Theme Toggle */}
+              <div className="navbar-right">
+                <LanguageToggle
+                  currentLang={currentLang}
+                  onToggle={onToggleLang}
+                />
+                <ThemeToggle
+                  currentTheme={currentTheme}
+                  onToggle={onToggleTheme}
+                />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="navbar-grid">
+              {/* LEFT: Hamburger Menu Icon */}
+              <div className="navbar-left">
+                <button
+                  type="button"
+                  className="hamburger-btn"
+                  onClick={() => setDrawerOpen(true)}
+                  aria-label="Open navigation menu"
+                  aria-expanded={drawerOpen}
+                  aria-controls="navigation-drawer"
+                >
+                  <span className="hamburger-box" aria-hidden="true">
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                    <span className="hamburger-line" />
+                  </span>
+                </button>
+              </div>
+
+              {/* CENTER: ArthSetu Logo & Branding */}
+              <div className="navbar-center-branding">
+                <a
+                  href="/"
+                  className="brand-wrapper"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavItemClick('home');
+                  }}
+                  aria-label="ArthSetu Home"
+                >
+                  <div className="brand-icon" aria-hidden="true">
+                    <Landmark size={26} strokeWidth={2.2} />
+                  </div>
+                  <div className="brand-text">
+                    <span className="brand-name">
+                      Arth<span>Setu</span>
+                    </span>
+                    <span className="brand-tagline">
+                      {currentLang === 'hi'
+                        ? 'एआई-संचालित व्यापार मार्गदर्शन'
+                        : 'AI-powered Business Guidance'}
+                    </span>
+                  </div>
+                </a>
+              </div>
+
+              {/* RIGHT: Language Toggle & Theme Toggle */}
+              <div className="navbar-right">
+                <LanguageToggle
+                  currentLang={currentLang}
+                  onToggle={onToggleLang}
+                />
+                <ThemeToggle
+                  currentTheme={currentTheme}
+                  onToggle={onToggleTheme}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
