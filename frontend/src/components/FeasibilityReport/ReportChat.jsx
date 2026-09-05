@@ -31,6 +31,8 @@ export default function ReportChat({
   businessCategory = '',
   report = null,
   currentLang = 'en',
+  suggestedQuestions,
+  suggested_questions,
 }) {
   const [messages, setMessages] = useState([]);
   const [inputQuestion, setInputQuestion] = useState('');
@@ -48,6 +50,16 @@ export default function ReportChat({
   // Extract clean district name
   const cleanDistrict = (district || 'Local Area').split(',')[0].trim();
   const cleanCategory = businessCategory || 'Micro Enterprise';
+
+  // Available suggested questions (from props, report object, or fallback defaults)
+  const activeSuggestedQuestions =
+    (suggestedQuestions && suggestedQuestions.length > 0 && suggestedQuestions) ||
+    (suggested_questions && suggested_questions.length > 0 && suggested_questions) ||
+    (report?.suggested_questions && report.suggested_questions.length > 0 && report.suggested_questions) || [
+      currentLang === 'hi' ? 'यहां प्रतिस्पर्धा अधिक क्यों है?' : 'Why is competition high here?',
+      currentLang === 'hi' ? 'मुख्य बाजार अवसर क्या हैं?' : 'What are the key market opportunities?',
+      currentLang === 'hi' ? 'मैं अपना लाभ मार्जिन कैसे बढ़ा सकता हूं?' : 'How can I improve my profit margin?',
+    ];
 
   // Feature detection for Web Speech API
   const SpeechRecognition =
@@ -226,18 +238,13 @@ export default function ReportChat({
     handleSendQuestion();
   };
 
-  const handleSuggestionClick = (suggestionText) => {
-    handleSendQuestion(suggestionText);
+  const handleSuggestionSelect = (suggestionText) => {
+    setInputQuestion(suggestionText);
   };
-
-  const promptSuggestions = [
-    currentLang === 'hi' ? 'यहां प्रतिस्पर्धा अधिक क्यों है?' : 'Why is competition high here?',
-    currentLang === 'hi' ? 'मुख्य बाजार अवसर क्या हैं?' : 'What are the key market opportunities?',
-    currentLang === 'hi' ? 'मैं अपना लाभ मार्जिन कैसे बढ़ा सकता हूं?' : 'How can I improve my profit margin?',
-  ];
 
   return (
     <div
+      data-html2canvas-ignore="true"
       className="dashboard-card"
       style={{
         marginTop: '1.5rem',
@@ -316,29 +323,30 @@ export default function ReportChat({
             }}
           >
             <HelpCircle size={24} style={{ color: '#059669', margin: '0 auto 0.5rem' }} />
-            <p style={{ fontSize: '0.875rem', color: '#475569', fontWeight: 500, marginBottom: '0.75rem' }}>
-              {currentLang === 'hi'
-                ? 'इस रिपोर्ट के बारे में एक प्रश्न पूछें — जैसे "यहां प्रतिस्पर्धा अधिक क्यों है?"'
-                : "Ask a question about this report — e.g. 'Why is competition high here?'"}
+            <p style={{ fontSize: '0.875rem', color: '#475569', fontWeight: 600, marginBottom: '0.75rem' }}>
+              {currentLang === 'hi' ? 'सुझाए गए प्रश्न (Suggested Questions):' : 'Suggested questions:'}
             </p>
-            {/* Quick Prompt Suggestions */}
+            {/* Quick Prompt Suggestions Chips */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem', justifyContent: 'center' }}>
-              {promptSuggestions.map((sug, idx) => (
+              {activeSuggestedQuestions.map((sug, idx) => (
                 <button
                   key={idx}
                   type="button"
-                  onClick={() => handleSuggestionClick(sug)}
+                  onClick={() => handleSuggestionSelect(sug)}
                   disabled={loading}
+                  title={currentLang === 'hi' ? 'इनपुट में जोड़ने के लिए क्लिक करें' : 'Click to populate input'}
                   style={{
                     fontSize: '0.75rem',
-                    padding: '4px 10px',
+                    padding: '6px 12px',
                     borderRadius: '16px',
                     border: '1px solid rgba(5, 150, 105, 0.3)',
                     backgroundColor: '#FFFFFF',
                     color: '#047857',
                     fontWeight: 500,
                     cursor: 'pointer',
+                    textAlign: 'left',
                     transition: 'all 0.15s ease',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
                   }}
                 >
                   💡 {sug}
@@ -462,6 +470,7 @@ export default function ReportChat({
           disabled={loading}
           style={{
             flex: 1,
+            minWidth: 0,
             padding: '0.625rem 0.875rem',
             borderRadius: '6px',
             border: isListening ? '2px solid #EF4444' : '1px solid var(--color-border, #CBD5E1)',

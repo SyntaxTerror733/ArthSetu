@@ -4,59 +4,103 @@
       "district": "Ghaziabad",
       "state": "Uttar Pradesh",
       "population": 4681645,
-      "rural_population_percent": 32.5,
-      "population_density_per_sqkm": 3971,
+      "rural_population_percent": 20,
+      "population_density_per_sqkm": 3970.9,
       "sector_business_density": {
         "retail": 107,
         "textiles": 40,
         "dairy": 20,
         "food_processing": 18
       },
-      "per_capita_income_annual_inr": 165000,
-      "notes": "Business density figures sourced from OpenStreetMap business listings (403 verified businesses surveyed). Population, income, and density figures still placeholder pending Census data."
+      "per_capita_income_annual_inr": 211505,
+      "notes": "Business density figures sourced from OpenStreetMap business listings (403 verified businesses surveyed). Population, population density, and per capita income verified from Census of India 2011 and UP Economic Survey 2023-24; only rural population percentage remains estimated.",
+      "data_confidence": {
+        "business_density": "verified",
+        "population": "verified",
+        "rural_population_percent": "estimated",
+        "population_density_per_sqkm": "verified",
+        "per_capita_income_annual_inr": "verified"
+      },
+      "sources": [
+        "Business density: OpenStreetMap verified listings (403 businesses surveyed)",
+        "Population & density: Census of India 2011 (most recent completed Census). Per capita income: Uttar Pradesh Economic Survey / District Domestic Product 2023-24. Rural population %: estimated based on district urbanization profile, not sourced."
+      ]
     },
     {
       "district": "Meerut",
       "state": "Uttar Pradesh",
-      "population": 4448359,
-      "rural_population_percent": 65.2,
-      "population_density_per_sqkm": 1084,
+      "population": 3443689,
+      "rural_population_percent": 45,
+      "population_density_per_sqkm": 1345.7,
       "sector_business_density": {
         "retail": 80,
         "dairy": 21,
         "food_processing": 39
       },
-      "per_capita_income_annual_inr": 92000,
-      "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (170 verified businesses surveyed, excluding 8 low-quality unnamed entries). Population, income, and density figures still placeholder pending Census data. Replaces Bareilly as a demo district."
+      "per_capita_income_annual_inr": 138887,
+      "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (170 verified businesses surveyed, excluding 8 low-quality unnamed entries). Population, population density, and per capita income verified from Census of India 2011 and UP Economic Survey 2023-24; only rural population percentage remains estimated. Replaces Bareilly as a demo district.",
+      "data_confidence": {
+        "business_density": "verified",
+        "population": "verified",
+        "rural_population_percent": "estimated",
+        "population_density_per_sqkm": "verified",
+        "per_capita_income_annual_inr": "verified"
+      },
+      "sources": [
+        "Business density: OpenStreetMap verified listings (170 businesses surveyed)",
+        "Population & density: Census of India 2011 (most recent completed Census). Per capita income: Uttar Pradesh Economic Survey / District Domestic Product 2023-24. Rural population %: estimated based on district urbanization profile, not sourced."
+      ]
     },
     {
       "district": "Prayagraj",
       "state": "Uttar Pradesh",
-      "population": 4483992,
-      "rural_population_percent": 88.2,
-      "population_density_per_sqkm": 781,
+      "population": 5954391,
+      "rural_population_percent": 65,
+      "population_density_per_sqkm": 1086.2,
       "sector_business_density": {
         "retail": 79,
         "textiles": 105,
         "dairy": 6,
         "food_processing": 27
       },
-      "per_capita_income_annual_inr": 62000,
-      "notes": "Business density figures sourced from OpenStreetMap business listings (498 verified entries surveyed). Population, income, and density figures still placeholder pending Census data. Replaces Sitapur as a demo district."
+      "per_capita_income_annual_inr": 89790,
+      "notes": "Business density figures sourced from OpenStreetMap business listings (498 verified entries surveyed). Population, population density, and per capita income verified from Census of India 2011 and UP Economic Survey 2023-24; only rural population percentage remains estimated. Replaces Sitapur as a demo district.",
+      "data_confidence": {
+        "business_density": "verified",
+        "population": "verified",
+        "rural_population_percent": "estimated",
+        "population_density_per_sqkm": "verified",
+        "per_capita_income_annual_inr": "verified"
+      },
+      "sources": [
+        "Business density: OpenStreetMap verified listings (498 businesses surveyed)",
+        "Population & density: Census of India 2011 (most recent completed Census). Per capita income: Uttar Pradesh Economic Survey / District Domestic Product 2023-24. Rural population %: estimated based on district urbanization profile, not sourced."
+      ]
     },
     {
       "district": "Varanasi",
       "state": "Uttar Pradesh",
       "population": 3676841,
-      "rural_population_percent": 56.6,
-      "population_density_per_sqkm": 2395,
+      "rural_population_percent": 55,
+      "population_density_per_sqkm": 2395.3,
       "sector_business_density": {
         "retail": 68,
         "dairy": 10,
         "food_processing": 30
       },
-      "per_capita_income_annual_inr": 118000,
-      "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (127 verified businesses surveyed). Population, income, and density figures still placeholder pending Census data."
+      "per_capita_income_annual_inr": 103354,
+      "notes": "Business density figures (retail, dairy, food_processing) sourced from OpenStreetMap business listings (127 verified businesses surveyed). Population, population density, and per capita income verified from Census of India 2011 and UP Economic Survey 2023-24; only rural population percentage remains estimated.",
+      "data_confidence": {
+        "business_density": "verified",
+        "population": "verified",
+        "rural_population_percent": "estimated",
+        "population_density_per_sqkm": "verified",
+        "per_capita_income_annual_inr": "verified"
+      },
+      "sources": [
+        "Business density: OpenStreetMap verified listings (127 businesses surveyed)",
+        "Population & density: Census of India 2011 (most recent completed Census). Per capita income: Uttar Pradesh Economic Survey / District Domestic Product 2023-24. Rural population %: estimated based on district urbanization profile, not sourced."
+      ]
     }
   ]
 }

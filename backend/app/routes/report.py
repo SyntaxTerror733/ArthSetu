@@ -23,29 +23,37 @@ def generate_feasibility_report(request: FeasibilityReportRequest):
     if district_data is None:
         raise HTTPException(
             status_code=404,
-            detail=f"No dataset found for district '{request.district}'. Supported districts: Ghaziabad, Bareilly, Sitapur, Varanasi."
+            detail=f"No dataset found for district '{request.district}'."
         )
+
+    data_confidence = district_data.get("data_confidence")
+    sources = district_data.get("sources", [])
 
     try:
         prompt = build_feasibility_prompt(district_data, request.business_category, request.language)
         raw_response = call_llm(prompt)
         report = parse_feasibility_report(raw_response)
         report["_source"] = "live_llm"
-        return report
     except (FeasibilityReportParseError, Exception) as e:
         logger.warning(
             f"Live LLM generation/parsing failed for district='{request.district}', category='{request.business_category}': {e}"
         )
         fallback = get_fallback_report(request.district, request.business_category)
         if fallback is not None:
-            fallback_copy = dict(fallback)
-            fallback_copy["_source"] = "fallback_cache"
-            return fallback_copy
-
-        raise HTTPException(
-            status_code=502,
-            detail=(
-                f"Failed to generate feasibility report for '{request.district}' ({request.business_category}). "
-                f"Live LLM error: {e}. No cached fallback entry exists for this district/category combination."
+            report = dict(fallback)
+            report["_source"] = "fallback_cache"
+        else:
+            raise HTTPException(
+                status_code=502,
+                detail=(
+                    f"Failed to generate feasibility report for '{request.district}' ({request.business_category}). "
+                    f"Live LLM error: {e}. No cached fallback entry exists for this district/category combination."
+                )
             )
-        )
+
+    if data_confidence:
+        report["data_confidence"] = data_confidence
+    if sources:
+        report["sources"] = sources
+
+    return report

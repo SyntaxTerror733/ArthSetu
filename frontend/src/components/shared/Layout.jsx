@@ -7,7 +7,8 @@ import {
   HelpCircle,
   Info,
   ChevronRight,
-  ShieldCheck
+  ShieldCheck,
+  ArrowRightLeft,
 } from 'lucide-react';
 import LanguageToggle from './LanguageToggle';
 import ThemeToggle from './ThemeToggle';
@@ -18,7 +19,7 @@ import ThemeToggle from './ThemeToggle';
  *   - LEFT: Hamburger menu icon
  *   - CENTER: ArthSetu logo & branding horizontally centered
  *   - RIGHT: Language toggle & Dark/Light theme toggle
- * - Left-side Navigation Drawer with Home, How It Works, and About links
+ * - Left-side Navigation Drawer with Home, Compare, How It Works, and About links
  * - Clean minimal Footer
  */
 export default function Layout({
@@ -77,6 +78,13 @@ export default function Layout({
       icon: Home,
       labelEn: 'Home',
       labelHi: 'मुख्य पृष्ठ',
+    },
+    {
+      id: 'compare',
+      path: '/compare',
+      icon: ArrowRightLeft,
+      labelEn: 'Compare Opportunities',
+      labelHi: 'व्यावसायिक तुलना',
     },
     {
       id: 'how-it-works',

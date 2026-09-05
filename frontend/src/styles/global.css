@@ -1549,6 +1549,41 @@ input, select, textarea {
   }
 }
 
+/* Compare Page Side-by-Side Container & Column Styles */
+.compare-grid-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+@media (min-width: 840px) {
+  .compare-grid-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.compare-report-column {
+  container-type: inline-size;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+@container (max-width: 720px) {
+  .compare-report-column .grid-2,
+  .compare-report-column .grid-3,
+  .compare-report-column .swot-2x2-grid,
+  .compare-report-column .market-reach-stats {
+    grid-template-columns: 1fr !important;
+  }
+
+  .compare-report-column .dashboard-card {
+    padding: 1.25rem 1rem !important;
+  }
+}
+
+
 /* 1. Market Reach & Opportunity */
 .market-reach-stats {
   display: grid;

@@ -14,6 +14,7 @@ REQUIRED_KEYS = {
     "swot",
     "competitor_mapping",
     "pricing_suggestion",
+    "suggested_questions",
 }
 
 REQUIRED_SWOT_KEYS = {
@@ -76,6 +77,12 @@ def parse_feasibility_report(raw_text: str) -> dict:
         missing_swot_sorted = sorted(list(missing_swot))
         raise FeasibilityReportParseError(
             f"SWOT section is missing required keys: {', '.join(missing_swot_sorted)}"
+        )
+
+    suggested_q = data.get("suggested_questions")
+    if not isinstance(suggested_q, list) or len(suggested_q) == 0:
+        raise FeasibilityReportParseError(
+            "Field 'suggested_questions' must be a non-empty list of questions"
         )
 
     return data

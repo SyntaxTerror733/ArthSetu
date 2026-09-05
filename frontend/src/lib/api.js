@@ -89,3 +89,31 @@ export async function askChatQuestion(district, businessCategory, question, repo
   return handleResponse(response);
 }
 
+/**
+ * Compares two business categories for a district and returns a synthesized AI recommendation verdict.
+ * @param {string} district - District name
+ * @param {string} categoryA - First business category
+ * @param {string} categoryB - Second business category
+ * @param {Object} reportA - Feasibility report for category A
+ * @param {Object} reportB - Feasibility report for category B
+ * @param {string} [language='en'] - Language selection ('en' | 'hi')
+ * @returns {Promise<Object>} Object with `{ recommended_category, confidence_note, reasoning, key_tradeoffs }`
+ */
+export async function getComparisonVerdict(district, categoryA, categoryB, reportA, reportB, language = 'en') {
+  const response = await fetch(`${BASE_URL}/api/compare-verdict`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      district,
+      category_a: categoryA,
+      category_b: categoryB,
+      report_a: reportA,
+      report_b: reportB,
+      language,
+    }),
+  });
+  return handleResponse(response);
+}
+

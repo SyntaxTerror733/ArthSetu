@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import HowItWorks from './pages/HowItWorks';
 import About from './pages/About';
 import Result from './pages/Result';
+import Compare from './pages/Compare';
 
 /**
  * Helper to map URL path to internal page id
@@ -13,6 +14,7 @@ const getPageFromPath = (path) => {
   if (normalized === '/how-it-works') return 'how-it-works';
   if (normalized === '/about') return 'about';
   if (normalized === '/result') return 'result';
+  if (normalized === '/compare') return 'compare';
   return 'home';
 };
 
@@ -27,6 +29,8 @@ const getPathFromPage = (page) => {
       return '/about';
     case 'result':
       return '/result';
+    case 'compare':
+      return '/compare';
     default:
       return '/';
   }
@@ -35,7 +39,7 @@ const getPathFromPage = (page) => {
 /**
  * Root Application Component
  * Handles clean client-side routing between Home (/), How It Works (/how-it-works),
- * About (/about), and Result (/result), global language state, and dark/light theme state.
+ * About (/about), Result (/result), and Compare (/compare), global language state, and dark/light theme state.
  */
 export default function App() {
   // Routing State: Initialized from current window.location.pathname
@@ -124,12 +128,21 @@ export default function App() {
           />
         );
 
+      case 'compare':
+        return (
+          <Compare
+            onNavigate={handleNavigate}
+            currentLang={currentLang}
+          />
+        );
+
       case 'result':
         return (
           <Result
             submissionData={submissionData}
             onBack={handleBackToHome}
             onStartNew={handleStartNew}
+            onNavigate={handleNavigate}
             currentLang={currentLang}
           />
         );

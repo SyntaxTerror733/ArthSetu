@@ -22,6 +22,7 @@ CRITICAL CONSTRAINTS:
 3. NO FINANCIAL CALCULATIONS: Do NOT calculate or mention any loan amounts, interest rates, margin contributions, EMI payments, or bank financial figures. Loan and credit calculations are handled by a separate deterministic engine.
 4. INSUFFICIENT DATA: If the provided data is insufficient to make a confident statement about a specific aspect, state so explicitly rather than guessing.
 5. LANGUAGE & TONE: Write in plain, clear, accessible language (2 to 4 sentences per section) suited for an entrepreneur with limited formal business training. Avoid complex corporate jargon.
+6. SUGGESTED QUESTIONS: Also generate exactly 3 relevant follow-up questions a real entrepreneur might ask after reading this report, based specifically on the district and business category discussed. Make them natural, conversational questions (not generic) — e.g. referencing the actual competitor count, income level, or specific risk mentioned in the report. Do NOT include any question about loan amounts, interest rates, or financing — those are out of scope for this report.
 
 JSON RESPONSE SCHEMA:
 {
@@ -34,5 +35,6 @@ JSON RESPONSE SCHEMA:
     "threats": "2-4 plain sentences noting external market risks such as existing sector business density."
   },
   "competitor_mapping": "2-4 plain sentences evaluating local competition using the sector business count ({sector_business_count}).",
-  "pricing_suggestion": "2-4 plain sentences recommending pricing strategy aligned with district per capita income ({per_capita_income})."
+  "pricing_suggestion": "2-4 plain sentences recommending pricing strategy aligned with district per capita income ({per_capita_income}).",
+  "suggested_questions": ["Natural conversational follow-up question 1?", "Natural conversational follow-up question 2?", "Natural conversational follow-up question 3?"]
 }

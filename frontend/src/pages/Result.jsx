@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ArrowLeft,
   RotateCcw,
@@ -12,10 +12,14 @@ import {
   Share2,
   AlertCircle,
   RefreshCw,
+  Download,
+  Loader2,
+  ArrowRightLeft,
 } from 'lucide-react';
 import FeasibilityReport from '../components/FeasibilityReport/FeasibilityReport';
 import FinancialRoadmap from '../components/FinancialRoadmap/FinancialRoadmap';
 import { useCalculateFinancials, useFeasibilityReport } from '../hooks/useApi';
+import { exportReportToPdf } from '../lib/pdfExport';
 
 /**
  * Result Page Component
@@ -23,14 +27,19 @@ import { useCalculateFinancials, useFeasibilityReport } from '../hooks/useApi';
  * - Top Parameter summary bar (Location, Margin Capital, Category, Description)
  * - Module 1: Business Feasibility Report (Wired to backend AI endpoint)
  * - Module 2: Financial Roadmap (Wired to backend API)
- * - Navigation actions: Back button & Start New Analysis button
+ * - Navigation actions: Back button, Start New Analysis, Print, & Client-side PDF Export
  */
 export default function Result({
   submissionData,
   onBack,
   onStartNew,
+  onNavigate,
   currentLang = 'en',
 }) {
+  const [pdfExporting, setPdfExporting] = useState(false);
+  const [pdfExportError, setPdfExportError] = useState(null);
+  const pdfExportRef = useRef(null);
+
   const {
     calculate,
     data: financialData,
@@ -101,13 +110,37 @@ export default function Result({
     window.print();
   };
 
+  const handleDownloadPdf = async () => {
+    if (!pdfExportRef.current) return;
+    setPdfExporting(true);
+    setPdfExportError(null);
+
+    try {
+      const cleanDist = districtName.replace(/[^a-zA-Z0-9]/g, '_');
+      const cleanCat = categoryName.replace(/[^a-zA-Z0-9]/g, '_');
+      const filename = `ArthSetu_Report_${cleanDist}_${cleanCat}.pdf`;
+
+      await exportReportToPdf(pdfExportRef.current, filename);
+    } catch (err) {
+      console.error('PDF export error:', err);
+      setPdfExportError(
+        err.message ||
+          (currentLang === 'hi'
+            ? 'पीडीएफ तैयार करने में समस्या आई। कृपया थोड़ी देर बाद पुनः प्रयास करें या प्रिंट विकल्प का उपयोग करें।'
+            : 'Failed to generate PDF report. Please try again or use the Print Summary button.')
+      );
+    } finally {
+      setPdfExporting(false);
+    }
+  };
+
   return (
     <div className="container dashboard-container">
       {/* Parameter Top Header Bar */}
       <div className="dashboard-top-bar">
         {/* Navigation & Action Buttons */}
         <div className="dashboard-top-nav">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <button
               type="button"
               className="btn-nav-action btn-nav-back"
@@ -127,20 +160,93 @@ export default function Result({
               <RotateCcw size={16} />
               <span>{currentLang === 'hi' ? 'नया विश्लेषण शुरू करें' : 'Start New Analysis'}</span>
             </button>
+
+            {onNavigate && (
+              <button
+                type="button"
+                className="btn-nav-action btn-nav-new"
+                onClick={() => onNavigate('compare')}
+                aria-label="Compare with another business type"
+              >
+                <ArrowRightLeft size={16} />
+                <span>{currentLang === 'hi' ? 'व्यवसाय तुलना करें' : 'Compare Business Types'}</span>
+              </button>
+            )}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Export & Print Action Buttons */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
             <button
               type="button"
               className="btn-nav-action btn-nav-back"
               onClick={handlePrint}
-              aria-label="Print or Download PDF"
+              aria-label="Print Summary"
             >
               <Printer size={16} />
               <span>{currentLang === 'hi' ? 'प्रिंट / सेव' : 'Print Summary'}</span>
             </button>
+
+            <button
+              type="button"
+              className="btn-primary-cta"
+              onClick={handleDownloadPdf}
+              disabled={pdfExporting}
+              aria-label="Download PDF Report"
+              style={{
+                width: 'auto',
+                padding: '0 1rem',
+                height: '36px',
+                fontSize: '0.8125rem',
+                backgroundColor: pdfExporting ? '#94A3B8' : '#059669',
+                cursor: pdfExporting ? 'not-allowed' : 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.375rem',
+              }}
+            >
+              {pdfExporting ? (
+                <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />
+              ) : (
+                <Download size={16} />
+              )}
+              <span>
+                {pdfExporting
+                  ? currentLang === 'hi' ? 'पीडीएफ बन रहा है...' : 'Generating PDF...'
+                  : currentLang === 'hi' ? 'पीडीएफ डाउनलोड करें' : 'Download PDF Report'}
+              </span>
+            </button>
           </div>
         </div>
+
+        {/* PDF Export Error Banner if capture fails */}
+        {pdfExportError && (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: '#FEF2F2',
+              border: '1px solid #FCA5A5',
+              borderRadius: '6px',
+              padding: '0.625rem 0.875rem',
+              marginTop: '0.75rem',
+              fontSize: '0.8125rem',
+              color: '#991B1B',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <AlertCircle size={16} style={{ flexShrink: 0 }} />
+              <span>{pdfExportError}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setPdfExportError(null)}
+              style={{ background: 'none', border: 'none', color: '#991B1B', cursor: 'pointer', fontWeight: 700 }}
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Parameter Summary Chips */}
         <div className="dashboard-parameters-summary">
@@ -196,75 +302,78 @@ export default function Result({
         )}
       </div>
 
-      {/* MODULE 1: BUSINESS FEASIBILITY REPORT */}
-      <FeasibilityReport
-        location={data.location}
-        category={data.category}
-        capital={data.marginCapital}
-        currentLang={currentLang}
-        reportData={reportData}
-        loading={reportLoading}
-        error={reportError}
-        onRetry={handleRetryReport}
-      />
-
-      {/* MODULE 2: FINANCIAL ROADMAP */}
-      {financialLoading ? (
-        <section className="dashboard-module" id="module-financial">
-          <div className="dashboard-card" style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
-            <div className="ai-pulse-spinner" style={{ margin: '0 auto 1rem' }} />
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
-              {currentLang === 'hi'
-                ? 'वित्तीय योजना तैयार की जा रही है...'
-                : 'Calculating Project Financials & Amortization...'}
-            </h3>
-            <p style={{ fontSize: '0.875rem', color: '#64748B' }}>
-              {currentLang === 'hi'
-                ? `₹${marginCap.toLocaleString('en-IN')} मार्जिन पूंजी पर ऋण पात्रता एवं किस्त अनुसूची गणना जारी है।`
-                : `Computing loan eligibility, scheme routing, and EMI schedules for ₹${marginCap.toLocaleString('en-IN')} margin capital.`}
-            </p>
-          </div>
-        </section>
-      ) : financialError ? (
-        <section className="dashboard-module" id="module-financial">
-          <div
-            className="dashboard-card"
-            style={{
-              padding: '2rem',
-              textAlign: 'center',
-              borderLeft: '4px solid #EF4444',
-            }}
-          >
-            <AlertCircle size={40} style={{ color: '#EF4444', margin: '0 auto 0.75rem' }} />
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
-              {currentLang === 'hi'
-                ? 'वित्तीय योजना लोड करने में असमर्थ'
-                : "Couldn't calculate your financial plan right now."}
-            </h3>
-            <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: '1.25rem' }}>
-              {financialError.message ||
-                (currentLang === 'hi'
-                  ? 'कृपया सर्वर कनेक्शन जांचें और पुनः प्रयास करें।'
-                  : 'Please check your connection and try again.')}
-            </p>
-            <button
-              type="button"
-              className="btn-primary-cta"
-              style={{ width: 'auto', padding: '0 1.25rem', height: '38px', fontSize: '0.875rem', margin: '0 auto' }}
-              onClick={handleRetryFinancials}
-            >
-              <RefreshCw size={16} />
-              <span>{currentLang === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}</span>
-            </button>
-          </div>
-        </section>
-      ) : (
-        <FinancialRoadmap
-          marginCapital={data.marginCapital}
-          financialData={financialData}
+      {/* Container for PDF Export (Captures Module 1 Feasibility Report & Module 2 Financial Roadmap) */}
+      <div ref={pdfExportRef}>
+        {/* MODULE 1: BUSINESS FEASIBILITY REPORT */}
+        <FeasibilityReport
+          location={data.location}
+          category={data.category}
+          capital={data.marginCapital}
           currentLang={currentLang}
+          reportData={reportData}
+          loading={reportLoading}
+          error={reportError}
+          onRetry={handleRetryReport}
         />
-      )}
+
+        {/* MODULE 2: FINANCIAL ROADMAP */}
+        {financialLoading ? (
+          <section className="dashboard-module" id="module-financial">
+            <div className="dashboard-card" style={{ padding: '2.5rem 2rem', textAlign: 'center' }}>
+              <div className="ai-pulse-spinner" style={{ margin: '0 auto 1rem' }} />
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+                {currentLang === 'hi'
+                  ? 'वित्तीय योजना तैयार की जा रही है...'
+                  : 'Calculating Project Financials & Amortization...'}
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#64748B' }}>
+                {currentLang === 'hi'
+                  ? `₹${marginCap.toLocaleString('en-IN')} मार्जिन पूंजी पर ऋण पात्रता एवं किस्त अनुसूची गणना जारी है।`
+                  : `Computing loan eligibility, scheme routing, and EMI schedules for ₹${marginCap.toLocaleString('en-IN')} margin capital.`}
+              </p>
+            </div>
+          </section>
+        ) : financialError ? (
+          <section className="dashboard-module" id="module-financial">
+            <div
+              className="dashboard-card"
+              style={{
+                padding: '2rem',
+                textAlign: 'center',
+                borderLeft: '4px solid #EF4444',
+              }}
+            >
+              <AlertCircle size={40} style={{ color: '#EF4444', margin: '0 auto 0.75rem' }} />
+              <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#0F172A', marginBottom: '0.5rem' }}>
+                {currentLang === 'hi'
+                  ? 'वित्तीय योजना लोड करने में असमर्थ'
+                  : "Couldn't calculate your financial plan right now."}
+              </h3>
+              <p style={{ fontSize: '0.875rem', color: '#64748B', marginBottom: '1.25rem' }}>
+                {financialError.message ||
+                  (currentLang === 'hi'
+                    ? 'कृपया सर्वर कनेक्शन जांचें और पुनः प्रयास करें।'
+                    : 'Please check your connection and try again.')}
+              </p>
+              <button
+                type="button"
+                className="btn-primary-cta"
+                style={{ width: 'auto', padding: '0 1.25rem', height: '38px', fontSize: '0.875rem', margin: '0 auto' }}
+                onClick={handleRetryFinancials}
+              >
+                <RefreshCw size={16} />
+                <span>{currentLang === 'hi' ? 'पुनः प्रयास करें' : 'Try Again'}</span>
+              </button>
+            </div>
+          </section>
+        ) : (
+          <FinancialRoadmap
+            marginCapital={data.marginCapital}
+            financialData={financialData}
+            currentLang={currentLang}
+          />
+        )}
+      </div>
 
       {/* Bottom Sticky Action Footer */}
       <div

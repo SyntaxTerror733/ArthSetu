@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { MapPin, ArrowRight, Info, ChevronDown, AlertCircle } from 'lucide-react';
 import Button from '../shared/Button';
+import { DISTRICT_CATEGORIES, DISTRICT_NAMES } from '../../lib/districtCategories';
 
 /**
  * Main Business Analysis Form Component
@@ -10,9 +11,9 @@ import Button from '../shared/Button';
 export default function InputForm({ onSubmit, currentLang = 'en', initialData = null }) {
   // Form State
   const [formData, setFormData] = useState({
-    location: initialData?.location || '',
+    location: initialData?.location || 'Ghaziabad',
     capital: initialData?.marginCapital ? String(initialData.marginCapital) : '',
-    category: initialData?.category || '',
+    category: initialData?.category || 'Retail',
     description: initialData?.description || '',
   });
 
@@ -20,17 +21,18 @@ export default function InputForm({ onSubmit, currentLang = 'en', initialData = 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Business Category Options
-  const categories = [
-    { value: 'Dairy', labelEn: 'Dairy (डेयरी)', labelHi: 'डेयरी' },
-    { value: 'Retail Shop', labelEn: 'Retail Shop (खुदरा दुकान)', labelHi: 'खुदरा दुकान' },
-    { value: 'Agriculture', labelEn: 'Agriculture (कृषि आधारित)', labelHi: 'कृषि आधारित' },
-    { value: 'Textiles', labelEn: 'Textiles & Garments (कपड़ा व सिलाई)', labelHi: 'कपड़ा व सिलाई' },
-    { value: 'Food Processing', labelEn: 'Food Processing (खाद्य प्रसंस्करण)', labelHi: 'खाद्य प्रसंस्करण' },
-    { value: 'Poultry', labelEn: 'Poultry (मुर्गी पालन)', labelHi: 'मुर्गी पालन' },
-    { value: 'Handicrafts', labelEn: 'Handicrafts (हस्तशिल्प)', labelHi: 'हस्तशिल्प' },
-    { value: 'Other', labelEn: 'Other (अन्य व्यवसाय)', labelHi: 'अन्य व्यवसाय' },
-  ];
+  // Available categories based on active location selection
+  const availableCategories = DISTRICT_CATEGORIES[formData.location] || ['Retail', 'Dairy'];
+
+  // Reset selected category if not available in newly selected district
+  useEffect(() => {
+    if (formData.location && availableCategories.length > 0 && !availableCategories.includes(formData.category)) {
+      setFormData((prev) => ({
+        ...prev,
+        category: availableCategories[0] || '',
+      }));
+    }
+  }, [formData.location, availableCategories, formData.category]);
 
   // Handle Input Changes
   const handleChange = (e) => {
@@ -146,21 +148,27 @@ export default function InputForm({ onSubmit, currentLang = 'en', initialData = 
                 <span className="input-icon-left" aria-hidden="true">
                   <MapPin size={20} />
                 </span>
-                <input
+                <select
                   id="form-location"
                   name="location"
-                  type="text"
-                  className={`form-input has-left-icon ${errors.location ? 'input-error' : ''}`}
-                  placeholder={
-                    currentLang === 'hi'
-                      ? 'गांव, ब्लॉक या जिला दर्ज करें'
-                      : 'Enter Village, Block or District'
-                  }
+                  className={`form-select has-left-icon ${errors.location ? 'input-error' : ''}`}
                   value={formData.location}
                   onChange={handleChange}
                   aria-invalid={errors.location ? 'true' : 'false'}
                   aria-describedby={errors.location ? 'location-error' : undefined}
-                />
+                >
+                  <option value="">
+                    {currentLang === 'hi' ? '-- जिला चुनें --' : '-- Select Target District --'}
+                  </option>
+                  {DISTRICT_NAMES.map((dist) => (
+                    <option key={dist} value={dist}>
+                      {dist}
+                    </option>
+                  ))}
+                </select>
+                <span className="select-arrow" aria-hidden="true">
+                  <ChevronDown size={18} />
+                </span>
               </div>
 
               {errors.location && (
@@ -257,11 +265,11 @@ export default function InputForm({ onSubmit, currentLang = 'en', initialData = 
                   aria-describedby={errors.category ? 'category-error' : undefined}
                 >
                   <option value="">
-                    {currentLang === 'hi' ? '-- श्रेणी का चयन करें --' : '-- Select Category --'}
+                    {currentLang === 'hi' ? '-- श्रेणी का चयन करें --' : '-- Select Business Category --'}
                   </option>
-                  {categories.map((cat) => (
-                    <option key={cat.value} value={cat.value}>
-                      {currentLang === 'hi' ? cat.labelHi : cat.labelEn}
+                  {availableCategories.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
                     </option>
                   ))}
                 </select>

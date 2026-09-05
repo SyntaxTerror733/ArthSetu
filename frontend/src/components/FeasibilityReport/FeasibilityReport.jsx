@@ -19,6 +19,7 @@ import {
   Database,
 } from 'lucide-react';
 import ReportChat from './ReportChat';
+import DataSourceBadge from './DataSourceBadge';
 
 /**
  * Module 1: Business Feasibility Report
@@ -40,6 +41,7 @@ export default function FeasibilityReport({
   loading = false,
   error = null,
   onRetry = null,
+  id,
 }) {
   // 1. Loading State View for Module 1
   if (loading) {
@@ -377,7 +379,7 @@ export default function FeasibilityReport({
   };
 
   return (
-    <section className="dashboard-module" id="module-feasibility">
+    <section className="dashboard-module" id={id}>
       {/* Module Title */}
       <div className="module-header">
         <div className="module-title-area">
@@ -418,6 +420,13 @@ export default function FeasibilityReport({
           )}
         </span>
       </div>
+
+      {/* Data Source & Credibility Badge */}
+      <DataSourceBadge
+        dataConfidence={reportData?.data_confidence}
+        sources={reportData?.sources}
+        currentLang={currentLang}
+      />
 
       {/* Grid Row 1: Market Reach & Opportunity Analysis */}
       <div className="grid-2" style={{ marginBottom: '1.5rem' }}>
@@ -725,6 +734,7 @@ export default function FeasibilityReport({
         businessCategory={category}
         report={reportData || insights}
         currentLang={currentLang}
+        suggestedQuestions={reportData?.suggested_questions}
       />
     </section>
   );
