@@ -1,115 +1,70 @@
-# VITAARA
-**AI-Powered Business Advisory & Financial Structuring Platform**
+<div align="center">
 
-VITAARA is an AI-driven hyper-local business advisory and financial structuring platform for rural and semi-urban micro-entrepreneurs in India, built for Smart India Hackathon 2026. It combines a deterministic government loan calculator with an AI-generated feasibility report, grounded in real local business and demographic data.
+# 🚀 VITAARA
 
-## Features
+### AI-Powered Business Advisory & Financial Structuring Platform
 
-### Module 2 — Financial Structuring & Loan Eligibility
-- Deterministic project cost & loan eligibility calculator (10% margin / 90% loan structure)
-- Automatic scheme routing between NSFDC Micro Finance Scheme (≤₹1.4L, 6.5% interest, 3-yr tenure) and Term Loan Scheme (₹1.4L-₹50L, 8% interest, 7-yr tenure)
-- Full quarterly EMI/repayment schedule generator with moratorium handling
-- 100% deterministic — no AI involvement, guaranteed accurate and auditable
+**Empowering rural and semi-urban entrepreneurs with hyper-local insights, intelligent business guidance and transparent financial planning.**
 
-### Module 1 — AI-Powered Feasibility Report
-- Hyper-local market reach, opportunity analysis, and 2x2 SWOT matrix, generated via Google Gemini, strictly grounded in real district data
-- Competitor mapping and pricing suggestions based on verified business density figures
-- AI-generated suggested follow-up questions tailored to each report
-- Strict guardrails: AI never invents statistics and never touches financial/loan figures (those remain exclusive to Module 2)
+<br>
 
-### Conversational Report Assistant
-- Follow-up Q&A chatbot grounded in the specific generated report
-- Voice input (speech-to-text) and voice output (text-to-speech) in both English and Hindi, via the browser's native Web Speech API
-- AI-generated contextual suggested questions per report
+<a href="https://arth-setu-phi.vercel.app/">
+<img src="https://img.shields.io/badge/🌐%20LIVE%20DEMO-VITAARA-059669?style=for-the-badge"/>
+</a>
 
-### Bilingual Support (English / Hindi)
-- Full UI translation plus AI-generated content (reports and chat answers) dynamically generated in the selected language
-- Automatic report regeneration on language switch, no form resubmission needed
+<a href="https://github.com/SyntaxTerror733/ArthSetu">
+<img src="https://img.shields.io/badge/💻%20SOURCE%20CODE-ArthSetu-181717?style=for-the-badge&logo=github"/>
+</a>
 
-### Business Opportunity Comparison Mode
-- Side-by-side feasibility comparison of two business categories in the same district
-- AI-synthesized recommendation verdict with reasoning and key tradeoffs
+<br><br>
 
-### Data Transparency & Credibility
-- Visible "Data Credibility" badge distinguishing verified vs. estimated figures per district
-- Full source citations shown to the user (Census of India, UP Economic Survey, OpenStreetMap business listings)
+<img src="https://capsule-render.vercel.app/api?type=waving&height=180&color=0:022c22,50:065f46,100:10b981&text=VITAARA&fontColor=ffffff&fontSize=55&fontAlignY=40&animation=twinkling"/>
 
-### Downloadable Reports
-- Client-side PDF export of both single-district and comparison reports
+</div>
 
-### Demo Resilience
-- Pre-verified fallback cache per district, ensuring the app degrades gracefully to a real, correct backup report if the live AI call fails
+---
 
-## Real Data Coverage
-Four demo districts across Uttar Pradesh, each with verified data:
-- **Business density**: OpenStreetMap-sourced business listings
-- **Population & density**: Census of India 2011 (most recent completed Census)
-- **Per capita income**: Uttar Pradesh Economic Survey 2023-24
-- Districts: Ghaziabad, Meerut, Prayagraj, Varanasi
+## 💡 About VITAARA
 
-## Tech Stack
+**VITAARA** is an AI-powered, hyper-local business advisory and financial structuring platform designed for **rural and semi-urban micro-entrepreneurs in India**.
 
-**Frontend**
-- React (Vite)
-- Tailwind CSS
-- Custom client-side routing (state-based, not react-router-dom)
-- anime.js v4 — hero entrance animations (splitText, stagger)
-- html2canvas + jsPDF — client-side PDF report export
-- Web Speech API (SpeechRecognition, SpeechSynthesis) — voice input/output
+It helps aspiring entrepreneurs understand:
 
-**Backend**
-- FastAPI (Python)
-- Uvicorn (ASGI server)
-- Pydantic — request/response validation
-- python-dotenv — environment configuration
+> **Which business opportunity is suitable for my area?**
 
-**AI**
-- Google Gemini API (gemini-3.1-flash-lite)
-- google-genai SDK
+and
 
-**Data Sources**
-- OpenStreetMap (business/POI listings)
-- Census of India 2011
-- Uttar Pradesh Economic Survey 2023-24
+> **How can I structure the finances for starting it?**
 
-## Architecture
-Four isolated backend layers (see docs/architecture.md for full reasoning):
-1. **Financial Engine** — 100% deterministic, no AI dependency
-2. **Data Layer** — cleaned Census + MSME/OSM dataset for demo districts
-3. **AI Layer** — Gemini prompt templates, response validation, fallback cache
-4. **Routes** — /api/calculate, /api/feasibility-report, /api/chat, /api/compare-verdict
+VITAARA combines **real district-level data, AI-powered feasibility analysis and deterministic financial calculations** to provide a practical business decision-making platform.
 
-**Golden rule**: financial_engine/ never imports from ai_layer/. The AI only ever receives numbers already computed by the financial engine — it never calculates its own.
+---
 
-## Quick Start
+## 🎯 The Problem
 
-### Backend Setup
-```bash
-cd backend
-python -m venv venv
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-# source venv/bin/activate
+Rural and semi-urban entrepreneurs often face:
 
-pip install -r requirements.txt
-cp .env.example .env  # Add your GEMINI_API_KEY
-uvicorn app.main:app --reload --port 8000
-```
+- Limited access to professional business guidance
+- Lack of reliable local market information
+- Difficulty comparing business opportunities
+- Limited awareness of suitable government schemes
+- Difficulty understanding loan eligibility
+- Language barriers
+- Lack of personalized feasibility analysis
 
-### Frontend Setup
-```bash
-cd frontend
-npm install
-npm run dev
-```
+Traditional business advice is often **generic**.
 
-The application will be running at `http://localhost:5173`.
+### VITAARA's Approach
 
-## Team Ownership
-
-| Component / Layer | Primary Ownership & Architecture |
-| :--- | :--- |
-| **Financial Engine & Credit Structuring** | Deterministic NSFDC Scheme & Loan Eligibility Engine |
-| **AI Layer & Prompt Engineering** | Google Gemini Integration, Guardrails, & Grounding |
-| **Full-Stack Integration & UI/UX** | React Frontend, Responsive Styling, & FastAPI Routes |
+```text
+LOCAL DATA
+     ↓
+MARKET ANALYSIS
+     ↓
+AI FEASIBILITY REPORT
+     ↓
+FINANCIAL STRUCTURING
+     ↓
+GOVERNMENT SCHEME MATCHING
+     ↓
+BETTER BUSINESS DECISION
